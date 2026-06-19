@@ -10,7 +10,7 @@ import {
   Form,
   Input,
   Label,
-  TextField,
+  TextField, ListBox, Select
 } from "@heroui/react";
 
 import { useRouter } from "next/navigation";
@@ -30,6 +30,7 @@ const RegisterPage = () => {
 
     const { data, error } = await authClient.signUp.email({
       ...userData,
+      plan: 'free', // default plan
     });
 
     console.log("Signup response:", { data, error });
@@ -108,6 +109,26 @@ const RegisterPage = () => {
 
             <FieldError />
           </TextField>
+
+          <Select className="w-[256px]" placeholder="Select your state" name="state" isRequired>
+      <Label>State</Label>
+      <Select.Trigger>
+        <Select.Value />
+        <Select.Indicator />
+      </Select.Trigger>
+      <Select.Popover>
+        <ListBox>
+          <ListBox.Item id="florida" textValue="user">
+            user
+            <ListBox.ItemIndicator />
+          </ListBox.Item>
+          <ListBox.Item id="california" textValue="admin">
+            admin
+            <ListBox.ItemIndicator />
+          </ListBox.Item>
+        </ListBox>
+      </Select.Popover>
+    </Select>
 
           {/* Buttons */}
           <div className="flex flex-col gap-3 pt-2">

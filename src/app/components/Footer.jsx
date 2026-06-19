@@ -3,8 +3,16 @@
 import Link from "next/link";
 import { Mail, Phone } from "lucide-react";
 import { FaXTwitter, FaFacebook, FaGithub } from "react-icons/fa6";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+
+  
+    const pathName=usePathname();
+    if(pathName.includes("/dashboard")){
+      return null; // Don't render the footer on dashboard pages
+    }
+  
   return (
     <footer className="bg-gray-950 text-gray-300 mt-10">
       <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-4 gap-8">

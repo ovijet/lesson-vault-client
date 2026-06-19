@@ -19,6 +19,11 @@ const Navbar = () => {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
+
+  console.log(user,'sssssssssssssss');
+
+  let role = user?.role || 'user'; // default to 'user' if role is not defined
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Public Lessons", path: "/publicLessons" },
@@ -31,6 +36,12 @@ const Navbar = () => {
       console.error("Error signing out:", error);
       return;
     }
+  }
+
+
+  const pathName=usePathname();
+  if(pathName.includes("/dashboard")){
+    return null; // Don't render the navbar on dashboard pages
   }
 
   return (
@@ -144,25 +155,24 @@ const Navbar = () => {
           {open && (
             <div className="absolute right-0 top-12 w-48 bg-white shadow-lg rounded-xl border z-50">
               <DropdownMenu>
-                <DropdownItem className="font-semibold">
-                  {user.name}
-                </DropdownItem>
-
-                <DropdownItem>
-                  <Link href="/profile">Profile</Link>
-                </DropdownItem>
-
-                <DropdownItem>
-                  <Link href="/dashboard">Dashboard</Link>
-                </DropdownItem>
-
-                <DropdownItem
-                  className="text-red-500"
-                  onClick={handleSignOut}
-                >
-                  Logout
-                </DropdownItem>
-              </DropdownMenu>
+                  <DropdownItem>{user.name}</DropdownItem>
+                  <DropdownItem>
+                    <Link href="/profile">Profile</Link>
+                  </DropdownItem>
+                  <DropdownItem>
+                   <Link href={`/dashboard/${role}`}>
+                   
+                   Dashboard
+                   
+                   </Link>
+                  </DropdownItem>
+                  <DropdownItem
+                    className="text-red-500"
+                    onClick={handleSignOut}
+                  >
+                    Logout
+                  </DropdownItem>
+                </DropdownMenu>
             </div>
           )}
         </>
