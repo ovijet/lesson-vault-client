@@ -39,10 +39,10 @@ const Navbar = () => {
   }
 
 
-  const pathName=usePathname();
-  if(pathName.includes("/dashboard")){
-    return null; // Don't render the navbar on dashboard pages
-  }
+  // const pathName=usePathname();
+  // if(pathName.includes("/dashboard")){
+  //   return null; // Don't render the navbar on dashboard pages
+  // }
 
   return (
     <header className="w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl">
@@ -85,14 +85,14 @@ const Navbar = () => {
           {user && (
             <>
               <Link
-                href="/addLessons"
+                href="/dashboard/add-lesson"
                 className="px-4 py-2 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 Add Lessons
               </Link>
 
               <Link
-                href="/myLessons"
+                href="/dashboard/my-lesson"
                 className="px-4 py-2 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 My Lessons
@@ -153,17 +153,15 @@ const Navbar = () => {
 
           {/* Dropdown */}
           {open && (
-            <div className="absolute right-0 top-12 w-48 bg-white shadow-lg rounded-xl border z-50">
+            <div className="absolute right-0 top-12 z-20 w-48 bg-white shadow-lg rounded-xl border z-50">
               <DropdownMenu>
                   <DropdownItem>{user.name}</DropdownItem>
                   <DropdownItem>
                     <Link href="/profile">Profile</Link>
                   </DropdownItem>
                   <DropdownItem>
-                   <Link href={`/dashboard/${role}`}>
-                   
-                   Dashboard
-                   
+                   <Link href={`/dashboard/${role}`}>                   
+                   Dashboard                  
                    </Link>
                   </DropdownItem>
                   <DropdownItem

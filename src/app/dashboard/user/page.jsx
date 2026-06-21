@@ -1,9 +1,11 @@
+import Home from '@/app/page';
 import React from 'react';
+import HomePage from '../home/page';
 
 const SellerDashBoardHomePage = () => {
     return (
         <div>
-            seller dashboard home page
+           <HomePage/>
         </div>
     );
 };
