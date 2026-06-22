@@ -47,11 +47,13 @@ const handleSubmit = async (e) => {
           <input
             name="title"
             placeholder="Title"
+            required
             className="w-full p-3 border rounded-xl"
           />
 
           <textarea
             name="lesson"
+            required
             placeholder="Write lesson..."
             className="w-full p-3 border rounded-xl"
           />
