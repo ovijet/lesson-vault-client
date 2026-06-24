@@ -26,7 +26,7 @@ export function DeleteModal({lesson}) {
 
          if (res.ok) {
       toast('Delete Room')
-        router.push('/dashboard/home')
+        router.push('/dashboard/user/home')
       }
 
     

@@ -122,10 +122,10 @@ const RegisterPage = () => {
             user
             <ListBox.ItemIndicator />
           </ListBox.Item>
-          <ListBox.Item id="california" textValue="admin">
+          {/* <ListBox.Item id="california" textValue="admin">
             admin
             <ListBox.ItemIndicator />
-          </ListBox.Item>
+          </ListBox.Item> */}
         </ListBox>
       </Select.Popover>
     </Select>

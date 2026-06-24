@@ -21,10 +21,13 @@ const Navbar = () => {
   const user = session?.user;
   const role = user?.role || "user";
 
+
+  console.log(role,'role');
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Public Lessons", path: "/public-lessons" },
-    { name: "Pricing", path: "/pricing" },
+    // { name: "Pricing", path: "/pricing" },
   ];
 
   const handleSignOut = async () => {
@@ -34,6 +37,19 @@ const Navbar = () => {
       console.error(error);
     }
   };
+
+
+
+  // const links={
+  //   admin:'/dashboard/admin'
+  // }
+
+  // if(user?.email){
+  //   navLinks.push({
+  //     label:'Dashboard',
+  //     href:links[user?.role||'user']
+  //   })
+  // }
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -70,15 +86,25 @@ const Navbar = () => {
 
           {user && (
             <>
+            <Link
+                    href="/pricing"
+                    onClick={() =>
+                      setIsMobileOpen(false)
+                    }
+                    className="block px-4 py-3"
+                  >
+                    pricing
+                  </Link>
+
               <Link
-                href="/dashboard/add-lesson"
+                href="/dashboard/user/add-lesson"
                 className="px-4 py-2 rounded-full hover:bg-gray-100"
               >
                 Add Lessons
               </Link>
 
               <Link
-                href="/dashboard/my-lesson"
+                href="/dashboard/user/my-lesson"
                 className="px-4 py-2 rounded-full hover:bg-gray-100"
               >
                 My Lessons
@@ -221,6 +247,17 @@ const Navbar = () => {
 
               {user && (
                 <>
+
+                <Link
+                    href="/dashboard/my-lesson"
+                    onClick={() =>
+                      setIsMobileOpen(false)
+                    }
+                    className="block px-4 py-3"
+                  >
+                    pricing
+                  </Link>
+
                   <Link
                     href="/dashboard/add-lesson"
                     onClick={() =>
@@ -240,7 +277,7 @@ const Navbar = () => {
                   >
                     My Lessons
                   </Link>
-
+                  
                   <Link
                     href={`/dashboard/${role}`}
                     onClick={() =>

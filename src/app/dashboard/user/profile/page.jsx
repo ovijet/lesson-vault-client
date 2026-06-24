@@ -1,11 +1,11 @@
 import React from 'react';
 
-const AdminDashboard = () => {
+const Profile = () => {
     return (
         <div>
-            admin 
+            profile
         </div>
     );
 };
 
-export default AdminDashboard;
+export default Profile;
