@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
 
 export default function AddLessonPage() {
   const router = useRouter();
+  const { data: session } = authClient.useSession();
 
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -70,6 +72,9 @@ export default function AddLessonPage() {
 
       isFeatured: false,
       isReviewed: false,
+        userEmail: session?.user?.email,
+  userName: session?.user?.name,
+  userId: session?.user?.id,
 
       likesCount: 0,
       favoritesCount: 0,

@@ -1,38 +1,52 @@
-import { stripe } from '@/lib/stripe'
-import { redirect } from 'next/navigation'
+"use client";
 
+import { useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
 
+export default function SuccessPage({ customerEmail }) {
+  const { data: session } = authClient.useSession();
 
-export default async function Success({ searchParams }) {
-  const { session_id } = await searchParams
+  useEffect(() => {
+    const updatePremium = async () => {
+      if (!session?.user?.email) return;
 
-  if (!session_id)
-    throw new Error('Please provide a valid session_id (`cs_test_...`)')
+      try {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/subscription`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: session.user.email,
+            }),
+          }
+        );
 
-  const {
-    status,
-    metadata,
-    customer_details: { email: customerEmail }
-  } = await stripe.checkout.sessions.retrieve(session_id, {
-    expand: ['line_items', 'payment_intent']
-  })
+        // session update দেখতে page reload
+        // window.location.reload();
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-  if (status === 'open') {
-    return redirect('/')
-  }
+    updatePremium();
+  }, [session]);
 
-  if (status === 'complete') {
-    console.log(metadata,'mmmmmmmmmmmmm');
-    
-    return (
-      <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to{' '}
-          {customerEmail}. If you have any questions, please email{' '}
-          <a href="mailto:orders@example.com">orders@example.com</a>.
-        </p>
-      </section>
-    )
-  }
+  return (
+    <section id="success">
+      <h2 className="text-3xl font-bold text-green-600">
+        Payment Successful 🎉
+      </h2>
 
+      <p>
+        We appreciate your business! A confirmation email will be sent to{" "}
+        {customerEmail}. If you have any questions, please email{" "}
+        <a href="mailto:orders@example.com">
+          orders@example.com
+        </a>.
+      </p>
+    </section>
+  );
 }

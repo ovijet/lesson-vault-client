@@ -4,21 +4,33 @@ import { DeleteModal } from "@/app/components/DeleteModal";
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { BookOpen } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export default function LessonsPage() {
   const [lessons, setLessons] = useState([]);
+  const { data: session } = authClient.useSession();
 
-  useEffect(() => {
-    const fetchLessons = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson`
-      );
-      const data = await res.json();
-      setLessons(data);
-    };
+useEffect(() => {
+  if (!session?.user?.email) return;
 
-    fetchLessons();
-  }, []);
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/my-lessons/${session.user.email}`
+  )
+    .then((res) => res.json())
+    .then((data) => setLessons(data));
+}, [session]);
+
+  // useEffect(() => {
+  //   const fetchLessons = async () => {
+  //     const res = await fetch(
+  //       `${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson`
+  //     );
+  //     const data = await res.json();
+  //     setLessons(data);
+  //   };
+
+  //   fetchLessons();
+  // }, []);
 
   const handleEdit = (id) => {
     console.log("Edit:", id);
@@ -29,7 +41,7 @@ export default function LessonsPage() {
       {/* Header */}
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Manage Lessons</h1>
+          <h1 className="text-3xl font-bold">My Lessons</h1>
           <p className="text-gray-500 mt-1">
             View, edit and manage all lessons
           </p>

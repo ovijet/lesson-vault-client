@@ -1,109 +1,181 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import DashboardChart from "@/app/components/DashboardChart";
 
 const HomePage = () => {
-  const { data, isPending } = authClient.useSession();
-  const user = data?.user;
+  const { data:session, isPending } = authClient.useSession();
+  const user = session?.user;
 
   const [lessons, setLessons] = useState([]);
 
-  useEffect(() => {
-    const fetchLessons = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/addLesson");
-        const data = await res.json();
-        setLessons(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+ useEffect(() => {
+  if (!session?.user?.email) return;
 
-    fetchLessons();
-  }, []);
+  fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/my-lessons/${session.user.email}`
+  )
+    .then((res) => res.json())
+    .then((data) => setLessons(data));
+}, [session]);
 
   if (isPending) {
-    return <p className="text-white p-6">Loading...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
   }
 
   const stats = [
-    { title: "LESSONS CREATED", value: lessons.length },
-    { title: "WISDOM SAVED", value: 0 },
-    { title: "IMPACT", value: 0 },
+    {
+      title: "Lessons Created",
+      value: lessons.length,
+    },
+    {
+      title: "Wisdom Saved",
+      value: lessons.length * 5,
+    },
+    {
+      title: "Impact Score",
+      value: lessons.length * 10,
+    },
   ];
 
   const latestLessons = lessons.slice(0, 3);
 
   return (
-    <div className="p-6 space-y-6">
-
-      {/* Header */}
-      <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-md border border-slate-800">
-        <h1 className="text-3xl font-bold">
+    <div className="min-h-screen bg-gray-50 p-6 space-y-8">
+      {/* Welcome Section */}
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+        <h1 className="text-4xl font-bold text-gray-900">
           Welcome back, {user?.name || "User"} 👋
         </h1>
 
-        <p className="text-slate-400 mt-2">
+        <p className="text-gray-500 mt-3 text-lg">
           Knowledge speaks, but wisdom listens.
         </p>
       </div>
 
-      {/* Stats Cards */}
+      {/* Quick Actions */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <Link
+          href="/dashboard/user/add-lesson"
+          className="bg-blue-600 text-white rounded-3xl p-6 hover:bg-blue-700 transition-all"
+        >
+          <h3 className="text-2xl font-bold">
+            Add New Lesson
+          </h3>
+
+          <p className="mt-2 text-blue-100">
+            Share your experience and wisdom with others.
+          </p>
+        </Link>
+
+        <Link
+          href="/public-lessons"
+          className="bg-white border border-gray-100 rounded-3xl p-6 hover:shadow-md transition-all"
+        >
+          <h3 className="text-2xl font-bold text-gray-900">
+            Explore Lessons
+          </h3>
+
+          <p className="mt-2 text-gray-500">
+            Discover life lessons from the community.
+          </p>
+        </Link>
+      </div>
+
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((item, index) => (
           <div
             key={index}
-            className="bg-slate-900 border border-slate-800 hover:border-blue-500 transition-all rounded-2xl p-5"
+            className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300"
           >
-            <p className="text-slate-400 text-sm">{item.title}</p>
+            <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+              {item.title}
+            </p>
 
-            <h2 className="text-3xl font-bold mt-2 text-blue-400">
+            <h2 className="text-4xl font-bold text-blue-600 mt-3">
               {item.value}
             </h2>
           </div>
         ))}
       </div>
 
-      {/* Recent Lessons */}
-    <div>
-          <div className="bg-slate-900 w-150 border border-slate-800 rounded-2xl p-5">
-    <div className="flex justify-between">
-             <h2 className="text-red text-xl font-semibold mb-4">
-                 Recent Lessons
-             </h2>
+      <DashboardChart/>
 
-             <Link  href="/dashboard/my-lesson">view all</Link>
+      {/* Recent Lessons */}
+      <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">
+            Recent Lessons
+          </h2>
+
+          <Link
+            href="/dashboard/user/my-lesson"
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
+            View All →
+          </Link>
         </div>
-        <div className="space-y-3 ">
+
+        <div className="space-y-4">
           {latestLessons.length === 0 ? (
-            <p className="text-slate-400 text-sm">No lessons found</p>
+            <div className="py-12 text-center">
+              <p className="text-gray-400">
+                No lessons found
+              </p>
+            </div>
           ) : (
             latestLessons.map((lesson) => (
               <div
                 key={lesson._id}
-                className="p-4  rounded-xl bg-slate-800/40 hover:bg-slate-800 transition"
+                className="p-5 rounded-2xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all"
               >
-                <h3 className="text-white font-semibold">
-                  {lesson.title}
-                </h3>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {lesson.title}
+                    </h3>
 
-                <p className="text-xs text-slate-400">
-                  {lesson.category} • {lesson.lessonType || "Motivational"}
-                </p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {lesson.category} •{" "}
+                      {lesson.lessonType ||
+                        "Motivational"}
+                    </p>
+                  </div>
 
-                <div className="flex gap-4 mt-2 text-slate-400 text-sm">
-                  <span>❤️ {lesson.likes || 0}</span>
-                  <span>💬 {lesson.comments || 0}</span>
+                  <span
+                    className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                      lesson.visibility ===
+                      "private"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {lesson.visibility ||
+                      "public"}
+                  </span>
+                </div>
+
+                <div className="flex gap-6 mt-4 text-sm text-gray-500">
+                  <span>
+                    ❤️ {lesson.likes || 0}
+                  </span>
+
+                  <span>
+                    💬 {lesson.comments || 0}
+                  </span>
                 </div>
               </div>
             ))
           )}
         </div>
       </div>
-    </div>
-
     </div>
   );
 };
