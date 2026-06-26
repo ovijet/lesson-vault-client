@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { BookOpen } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import EditModal from "@/app/components/EditModal";
 
 export default function LessonsPage() {
   const [lessons, setLessons] = useState([]);
@@ -128,7 +129,7 @@ useEffect(() => {
                 onClick={() => handleEdit(lesson._id)}
                 className="btn btn-circle btn-sm btn-info text-white"
               >
-                <FaEdit />
+                 <EditModal lesson={lesson}/>
               </button>
 
               <DeleteModal lesson={lesson} />

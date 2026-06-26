@@ -23,14 +23,14 @@
 // export default Layout;
 
 
-import React from 'react';
+// import React from 'react';
 
-const layout = () => {
-    return (
-        <div>
-            xxxxxx
-        </div>
-    );
-};
+// const layout = () => {
+//     return (
+//         <div>
+//             xxxxxx
+//         </div>
+//     );
+// };
 
-export default layout;
+// export default layout;

@@ -32,8 +32,8 @@ export default function Sidebar() {
       { icon: Home, label: "Home", href: "/dashboard/admin/home" },
       { icon: User, label: "Manage Users", href: "/dashboard/admin/manage-users" },
       { icon: BookOpen, label: "Manage Lessons", href: "/dashboard/admin/manage-lessons" },
-      { icon: ShieldAlert, label: "Reported Lessons", href: "/dashboard/reported-lessons" },
-      { icon: Settings, label: "Profile", href: "/dashboard/profile" },
+      { icon: ShieldAlert, label: "Reported Lessons", href: "/dashboard/admin/reported" },
+      { icon: Settings, label: "Profile", href: "/dashboard/admin/profile" },
     ],
   };
 

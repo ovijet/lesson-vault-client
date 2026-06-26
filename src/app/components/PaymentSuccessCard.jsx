@@ -1,50 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { authClient } from "@/lib/auth-client";
 import { BookOpen, Home, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function SuccessPage({ customerEmail }) {
-  const { data: session } = authClient.useSession();
-
-  useEffect(() => {
-    const updatePremium = async () => {
-      if (!session?.user?.email) return;
-
-      try {
-        await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/subscription`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: session.user.email,
-            }),
-          }
-        );
-
-        // session update দেখতে page reload
-        // window.location.reload();
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    updatePremium();
-  }, [session]);
-
+export default function PaymentSuccessCard() {
   return (
-    <section id="success">
-      <h2 className="text-3xl font-bold text-green-600">
-        Payment Successful 🎉
-      </h2>
-
-
-        <div className="min-h-screen bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -92,23 +54,21 @@ export default function SuccessPage({ customerEmail }) {
 
         {/* Buttons */}
         <div className="mt-12 space-y-5">
-          <Link href="/public-lessons">
+          <Link href="/lessons">
             <button className="w-full bg-slate-800 hover:bg-slate-900 text-white py-5 rounded-2xl font-bold text-xl flex justify-center items-center gap-3 transition">
               <BookOpen size={24} />
               Dive Into Content
             </button>
           </Link>
-            <br />
+
           <Link href="/dashboard">
             <button className="w-full border-2 border-green-600 text-green-700 hover:bg-green-50 py-5 rounded-2xl font-bold text-xl flex justify-center items-center gap-3 transition">
               <Home size={24} />
-              Return to Home
+              Return to Dashboard
             </button>
           </Link>
         </div>
       </motion.div>
     </div>
-      
-    </section>
   );
 }

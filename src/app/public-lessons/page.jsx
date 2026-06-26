@@ -2,8 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
 
 export default function PublicLessonsPage() {
+  const { data: session } = authClient.useSession();
+
+  const isPremiumUser = session?.user?.plan === "premium";
   const [lessons, setLessons] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -97,6 +101,18 @@ export default function PublicLessonsPage() {
                   </span>
                 )}
 
+                {lesson.accessLevel === "premium" && (
+                  <span
+                    className={`absolute top-16 right-4 px-3 py-1 rounded-full text-xs font-bold shadow-lg ${
+                      isPremiumUser
+                        ? "bg-green-600 text-white"
+                        : "bg-red-500 text-white"
+                    }`}
+                  >
+                    {isPremiumUser ? "⭐ PREMIUM" : "🔒 PREMIUM"}
+                  </span>
+                )}
+
                 <div className="absolute bottom-4 left-4">
                   <h2 className="text-white text-2xl font-bold line-clamp-1">
                     {lesson.title}
@@ -148,10 +164,26 @@ export default function PublicLessonsPage() {
 
                 {/* Button */}
                 <Link
-                  href={`/public-lessons/${lesson._id}`}
-                  className="block w-full text-center bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300"
+                  href={
+                    lesson.accessLevel === "premium"
+                      ? isPremiumUser
+                        ? `/public-lessons/${lesson._id}`
+                        : "/pricing"
+                      : `/public-lessons/${lesson._id}`
+                  }
+                  className={`block w-full text-center py-3 rounded-xl font-semibold transition-all duration-300 ${
+                    lesson.accessLevel === "premium"
+                      ? isPremiumUser
+                        ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-105"
+                        : "bg-gradient-to-r from-yellow-500 to-orange-500 hover:scale-105"
+                      : "bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-105"
+                  } text-white`}
                 >
-                  View Lesson →
+                  {lesson.accessLevel === "premium"
+                    ? isPremiumUser
+                      ? "View Lesson →"
+                      : "🔒 Unlock PRO"
+                    : "View Lesson →"}
                 </Link>
               </div>
             </div>
