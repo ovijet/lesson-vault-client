@@ -71,7 +71,7 @@ const RegisterPage = () => {
         {/* Header */}
         <div className="text-center pt-8 pb-2 px-6">
           <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
-            Create a StudyNook Account
+            Create a lesson vault Account
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Join and start booking study rooms

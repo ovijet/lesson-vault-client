@@ -14,7 +14,7 @@ export function DeleteModal({lesson}) {
     const handleDelete = async () => {
   try {
     const res = await fetch(
-      `http://localhost:5000/addLesson/${_id}`,
+      `process.env.NEXT_PUBLIC_SERVER_URL/addLesson/${_id}`,
       {
         method: "DELETE",
       }

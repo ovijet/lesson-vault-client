@@ -84,7 +84,7 @@ export default function AddLessonPage() {
 
     try {
       const res = await fetch(
-        "http://localhost:5000/addLesson",
+        `process.env.NEXT_PUBLIC_SERVER_URL/addLesson`,
         {
           method: "POST",
           headers: {
