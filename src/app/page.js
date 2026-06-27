@@ -12,8 +12,8 @@ export default function Home() {
   return (
     <div>
       <Banner/>
-      <PublicLessonsPage/>
-    {/* <AddLesson/> */}
+      {/* <PublicLessonsPage/> */}
+    <AddLesson/>
       <TopContributors/>
     </div>
   );

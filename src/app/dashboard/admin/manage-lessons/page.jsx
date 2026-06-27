@@ -1,50 +1,60 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, Search, RotateCcw, Star, CheckCircle, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { BookOpen, Search, RotateCcw, Star, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { DeleteModal } from "@/app/components/DeleteModal";
 
 export default function LessonsPage() {
   const [lessons, setLessons] = useState([]);
   
-  // ফিল্টার ও সার্চ স্টেট (নতুন যুক্ত করা হয়েছে)
+  // ফিল্টার ও সার্চ স্টেট
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [visibility, setVisibility] = useState("All Visibility");
   const [status, setStatus] = useState("All Status");
   const [page, setPage] = useState(1);
 
-  // ডেটা ফেচিং (সার্চ ও ফিল্টার কুয়েরি সহ)
+  // ফিল্টারিং ডেটা ফেচিং ইফেক্ট লজিক
   useEffect(() => {
     const fetchLessons = async () => {
-      // আপনার ফিল্টারিং প্যারামিটার ব্যাকএন্ডে পাঠানোর জন্য কুয়েরি বিল্ড করা হলো
-      const queryParams = new URLSearchParams({
-        search,
-        category: category !== "All Categories" ? category : "",
-        visibility: visibility !== "All Visibility" ? visibility : "",
-        status: status !== "All Status" ? status : "",
-        page: page.toString(),
-      });
+      // API query params build করা হচ্ছে
+      const queryParams = new URLSearchParams();
+      
+      if (search.trim() !== "") queryParams.append("search", search);
+      if (category !== "All Categories") queryParams.append("category", category);
+      if (visibility !== "All Visibility") queryParams.append("visibility", visibility.toLowerCase());
+      
+      // Status filtering logic alignment
+      if (status !== "All Status") {
+        const isReviewedValue = status === "Reviewed" ? "true" : "false";
+        queryParams.append("isReviewed", isReviewedValue);
+      }
+      
+      queryParams.append("page", page.toString());
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson?${queryParams.toString()}`
-      );
-      const data = await res.json();
-      setLessons(data);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson?${queryParams.toString()}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setLessons(data);
+        }
+      } catch (error) {
+        console.error("Error fetching filtered lessons:", error);
+      }
     };
 
     fetchLessons();
-  }, [search, category, visibility, status, page]);
+  }, [search, category, visibility, status, page]); // এই ডিপেন্ডেন্সিগুলো চেঞ্জ হলেই অটোমেটিক ফিল্টার রান হবে
 
-  // অ্যাকশন ফাংশনসমূহ (নতুন লজিক)
+  // অ্যাকশন ফাংশনসমূহ
   const handleToggleFeature = async (id) => {
     console.log("Toggle Feature ID:", id);
-    // await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson/${id}/feature`, { method: "PATCH" });
   };
 
   const handleReview = async (id) => {
     console.log("Mark as Reviewed ID:", id);
-    // await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson/${id}/review`, { method: "PATCH" });
   };
 
   // রিসেট ফিল্টার ফাংশন
@@ -56,77 +66,70 @@ export default function LessonsPage() {
     setPage(1);
   };
 
-  // স্ট্যাটাস কাউন্টারসমূহ (ফিল্টার ছাড়া টোটাল ডেটার ওপর ভিত্তি করে)
+  // স্ট্যাটাস কাউন্টারসমূহ (Active array filter calculation)
   const publicLessonsCount = lessons.filter((l) => l.visibility?.toLowerCase() === "public").length;
   const privateLessonsCount = lessons.filter((l) => l.visibility?.toLowerCase() === "private").length;
-  const reportedLessonsCount = lessons.filter((l) => l.isReported).length; // যদি স্কিমাতে থাকে
+  const reportedLessonsCount = lessons.filter((l) => l.isReported).length;
 
   return (
-    <div className="min-h-screen bg-slate-100 p-8 font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-50/50 p-3 sm:p-5 font-sans text-slate-800 max-w-full mx-auto overflow-hidden">
       
-      {/* ১. টপ মেট্রিক্স কার্ডস (ডিজাইন আপডেট করা হয়েছে) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="p-4 bg-blue-50 text-blue-600 rounded-2xl"><BookOpen size={24} /></div>
-          <div>
-            <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Lessons</h3>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1">{lessons.length}</p>
-            <p className="text-xs text-slate-400 mt-0.5">All lessons in system</p>
+      {/* ১. টপ মেট্রিক্স কার্ডস - কম্প্যাক্ট উইডথ ও হাইট */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 mb-6">
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
+          <div className="p-2 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="min-w-0">
+            <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Total</h3>
+            <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{lessons.length}</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="p-4 bg-emerald-50 text-emerald-600 rounded-2xl"><BookOpen size={24} /></div>
-          <div>
-            <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Public Lessons</h3>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1">{publicLessonsCount}</p>
-            <p className="text-xs text-slate-400 mt-0.5">Visible to all users</p>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
+          <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="min-w-0">
+            <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Public</h3>
+            <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{publicLessonsCount}</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="p-4 bg-purple-50 text-purple-600 rounded-2xl"><BookOpen size={24} /></div>
-          <div>
-            <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Private Lessons</h3>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1">{privateLessonsCount}</p>
-            <p className="text-xs text-slate-400 mt-0.5">Only for premium users</p>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
+          <div className="p-2 bg-purple-50 text-purple-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="min-w-0">
+            <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Private</h3>
+            <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{privateLessonsCount}</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="p-4 bg-orange-50 text-orange-600 rounded-2xl"><BookOpen size={24} /></div>
-          <div>
-            <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Reported Lessons</h3>
-            <p className="text-3xl font-extrabold text-slate-800 mt-1">{reportedLessonsCount}</p>
-            <p className="text-xs text-slate-400 mt-0.5">Flagged by users</p>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
+          <div className="p-2 bg-orange-50 text-orange-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="min-w-0">
+            <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Reported</h3>
+            <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{reportedLessonsCount}</p>
           </div>
         </div>
       </div>
 
       {/* হেডার */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Manage Lessons</h1>
-          <p className="text-sm text-slate-500">Manage all lessons created by users</p>
-        </div>
+      <div className="mb-4">
+        <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Manage Lessons</h1>
+        <p className="text-[11px] sm:text-xs text-slate-500">Control system data sets, configurations mapping and metadata setup.</p>
       </div>
 
-      {/* ২. ফিল্টার এবং সার্চ বার সেকশন (নতুন যুক্ত করা হয়েছে) */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-4 items-center justify-between mb-6">
-        <div className="flex flex-wrap gap-3">
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-slate-200 rounded-lg p-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+      {/* ২. ফিল্টার এবং সার্চ বার সেকশন - টাইট গ্রিড */}
+      <div className="bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between mb-5">
+        <div className="grid grid-cols-3 gap-2 w-full md:w-auto">
+          <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold">
             <option>All Categories</option>
             <option>Mindset</option>
             <option>Life</option>
             <option>Success</option>
-            <option>Productivity</option>
           </select>
-          <select value={visibility} onChange={(e) => setVisibility(e.target.value)} className="border border-slate-200 rounded-lg p-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+          <select value={visibility} onChange={(e) => { setVisibility(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold">
             <option>All Visibility</option>
             <option>Public</option>
             <option>Private</option>
           </select>
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="border border-slate-200 rounded-lg p-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold">
             <option>All Status</option>
             <option>Reviewed</option>
             <option>Not Reviewed</option>
@@ -134,87 +137,81 @@ export default function LessonsPage() {
         </div>
 
         <div className="flex gap-2 items-center w-full md:w-auto">
-          <div className="relative flex-1 md:w-72">
-            <Search className="absolute left-3 top-3 text-slate-400" size={16} />
-            <input type="text" placeholder="Search lessons by title..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div className="relative flex-1 md:w-56 lg:w-64">
+            <Search className="absolute left-2.5 top-2 text-slate-400" size={13} />
+            <input type="text" placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="w-full pl-7 pr-3 py-1.5 border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
           </div>
-          <button className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-sm">Search</button>
-          <button onClick={handleReset} className="border border-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition flex items-center gap-1">
-            <RotateCcw size={14} /> Reset
+          <button onClick={handleReset} className="border border-slate-200 text-slate-600 px-2.5 py-1.5 rounded-lg text-[11px] font-bold hover:bg-slate-50 transition flex items-center gap-1 active:scale-95 ml-auto">
+            <RotateCcw size={11} /> Reset
           </button>
         </div>
       </div>
 
-      {/* ৩. আপগ্রেডেড টেবিল ডিজাইন (Grid থেকে HTML Table এ কনভার্ট করা হয়েছে নিখুঁত ডিজাইনের জন্য) */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+      {/* ৩. আল্ট্রা-কম্প্যাক্ট টেবিল লেআউট */}
+      <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
+        <div className="w-full overflow-x-auto block">
+          <table className="w-full text-left border-collapse table-auto">
             <thead>
-              <tr className="bg-slate-50 text-slate-500 font-semibold text-xs uppercase border-b border-slate-200">
-                <th className="p-4 w-12">#</th>
-                <th className="p-4">Title</th>
-                <th className="p-4">Category</th>
-                <th className="p-4">Visibility</th>
-                <th className="p-4">Access Level</th>
-                <th className="p-4">Featured</th>
-                <th className="p-4">Reviewed</th>
-                <th className="p-4">Created At</th>
-                <th className="p-4 text-center">Actions</th>
+              <tr className="bg-slate-50/80 text-slate-500 font-bold text-[10px] uppercase tracking-wider border-b border-slate-200">
+                <th className="p-3 w-10 text-center">#</th>
+                <th className="p-3 max-w-[180px]">Title / Info</th>
+                <th className="p-3">Category</th>
+                <th className="p-3">Visibility</th>
+                <th className="p-3">Access</th>
+                <th className="p-3 text-center">Featured</th>
+                <th className="p-3 text-center">Reviewed</th>
+                <th className="p-3">Created</th>
+                <th className="p-3 text-center w-[200px]">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 text-sm font-medium text-slate-700">
+            <tbody className="divide-y divide-slate-100 text-[11px] font-bold text-slate-700">
               {lessons.map((lesson, idx) => (
-                <tr key={lesson._id} className="hover:bg-slate-50/50 transition">
-                  <td className="p-4 text-slate-400">{idx + 1}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 flex-shrink-0">
+                <tr key={lesson._id} className="hover:bg-slate-50/30 transition-all">
+                  <td className="p-2.5 text-center text-slate-400 font-normal">{idx + 1}</td>
+                  <td className="p-2.5">
+                    <div className="flex items-center gap-2 max-w-[180px]">
+                      <div className="w-7 h-7 rounded-lg overflow-hidden border border-slate-200/60 flex-shrink-0 bg-slate-50">
                         {lesson.image ? (
                           <img src={lesson.image} alt={lesson.title} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white"><BookOpen size={16}/></div>
+                          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white"><BookOpen size={11}/></div>
                         )}
                       </div>
-                      <div>
-                        <div className="font-bold text-slate-900">{lesson.title}</div>
-                        <div className="text-xs text-slate-400 line-clamp-1 max-w-[200px] font-normal">{lesson.description || 'No description available'}</div>
+                      <div className="overflow-hidden min-w-0">
+                        <div className="font-bold text-slate-900 truncate text-xs">{lesson.title}</div>
+                        <div className="text-[10px] text-slate-400 font-normal truncate">{lesson.description || 'No summary text'}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-600">{lesson.category || "Mindset"}</span>
+                  <td className="p-2.5">
+                    <span className="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-purple-50 text-purple-600 border border-purple-100/40">{lesson.category || "Mindset"}</span>
                   </td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${lesson.visibility?.toLowerCase() === "public" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"}`}>
+                  <td className="p-2.5">
+                    <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-extrabold border ${lesson.visibility?.toLowerCase() === "public" ? "bg-emerald-50 text-emerald-600 border-emerald-100/40" : "bg-red-50 text-red-600 border-red-100/40"}`}>
                       {lesson.visibility}
                     </span>
                   </td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${lesson.accessLevel?.toLowerCase() === "premium" ? "bg-amber-50 text-amber-600" : "bg-blue-50 text-blue-600"}`}>
+                  <td className="p-2.5">
+                    <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-extrabold border ${lesson.accessLevel?.toLowerCase() === "premium" ? "bg-amber-50 text-amber-600 border-amber-100/40" : "bg-blue-50 text-blue-600 border-blue-100/40"}`}>
                       {lesson.accessLevel || "Free"}
                     </span>
                   </td>
-                  <td className="p-4">
-                    <span className={`flex items-center gap-1 text-xs font-bold ${lesson.isFeatured ? "text-emerald-600" : "text-red-500"}`}>
-                      {lesson.isFeatured ? "⭐ Yes" : "❌ No"}
-                    </span>
+                  <td className="p-2.5 text-center font-bold text-slate-500">
+                    {lesson.isFeatured ? "⭐ Yes" : "No"}
                   </td>
-                  <td className="p-4">
-                    <span className={`flex items-center gap-1 text-xs font-bold ${lesson.isReviewed ? "text-emerald-600" : "text-red-500"}`}>
-                      {lesson.isReviewed ? "✅ Yes" : "❌ No"}
-                    </span>
+                  <td className="p-2.5 text-center font-bold text-slate-500">
+                    {lesson.isReviewed ? "✅ Yes" : "No"}
                   </td>
-                  <td className="p-4 text-slate-500 text-xs">
-                    {lesson.createdAt ? new Date(lesson.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A"}
+                  <td className="p-2.5 text-slate-400 font-medium text-[10px]">
+                    {lesson.createdAt ? new Date(lesson.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "N/A"}
                   </td>
-                  {/* ইমেজ অনুযায়ী বাটনসমূহ */}
-                  <td className="p-4">
-                    <div className="flex gap-2 justify-center items-center">
-                      <button onClick={() => handleToggleFeature(lesson._id)} className="bg-amber-500 hover:bg-amber-600 text-white text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 font-bold shadow-sm transition">
-                        <Star size={12}/> Feature
+                  <td className="p-2.5">
+                    <div className="flex gap-1 justify-center items-center">
+                      <button onClick={() => handleToggleFeature(lesson._id)} className="bg-amber-500 hover:bg-amber-600 text-white text-[10px] px-2 py-1 rounded-lg flex items-center gap-0.5 font-bold shadow-sm active:scale-95 transition-all">
+                        <Star size={10}/> Feature
                       </button>
-                      <button onClick={() => handleReview(lesson._id)} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 font-bold shadow-sm transition">
-                        <CheckCircle size={12}/> Review
+                      <button onClick={() => handleReview(lesson._id)} className="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] px-2 py-1 rounded-lg flex items-center gap-0.5 font-bold shadow-sm active:scale-95 transition-all">
+                        <CheckCircle size={10}/> Review
                       </button>
                       <DeleteModal lesson={lesson} />
                     </div>
@@ -227,25 +224,22 @@ export default function LessonsPage() {
 
         {/* নো লেসন ফাউন্ড স্টেট */}
         {lessons.length === 0 && (
-          <div className="py-20 text-center">
-            <BookOpen size={60} className="mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700">No Lessons Found</h3>
-            <p className="text-gray-500 mt-2">Try adjusting your filters or search terms.</p>
+          <div className="py-12 text-center bg-white">
+            <BookOpen size={40} className="mx-auto text-slate-200 mb-2" />
+            <h3 className="text-sm font-bold text-slate-700">No Lessons Found</h3>
           </div>
         )}
 
-        {/* ৪. প্যাজিনেশন ফুটার (নতুন যুক্ত করা হয়েছে) */}
+        {/* ৪. প্যাজিনেশন ফুটার */}
         {lessons.length > 0 && (
-          <footer className="p-4 border-t border-slate-200 bg-slate-50 flex justify-between items-center text-sm text-slate-500">
-            <div>Showing 1 to {lessons.length} of 120 lessons</div>
+          <footer className="p-3 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] text-slate-500 font-bold">
+            <div>Showing {lessons.length} items</div>
             <div className="flex gap-1 items-center">
-              <button onClick={() => setPage(p => Math.max(p - 1, 1))} className="p-2 border border-slate-200 rounded-lg hover:bg-white text-slate-400 disabled:opacity-50" disabled={page === 1}><ChevronLeft size={16}/></button>
-              <button className={`px-3.5 py-1.5 rounded-lg font-bold ${page === 1 ? 'bg-blue-600 text-white' : 'bg-white border border-slate-200 text-slate-700'}`} onClick={() => setPage(1)}>1</button>
-              <button className={`px-3.5 py-1.5 rounded-lg font-bold ${page === 2 ? 'bg-blue-600 text-white' : 'bg-white border border-slate-200 text-slate-700'}`} onClick={() => setPage(2)}>2</button>
-              <button className={`px-3.5 py-1.5 rounded-lg font-bold ${page === 3 ? 'bg-blue-600 text-white' : 'bg-white border border-slate-200 text-slate-700'}`} onClick={() => setPage(3)}>3</button>
-              <span className="px-2">...</span>
-              <button className="px-3.5 py-1.5 border border-slate-200 rounded-lg bg-white text-slate-700" onClick={() => setPage(15)}>15</button>
-              <button onClick={() => setPage(p => p + 1)} className="p-2 border border-slate-200 rounded-lg hover:bg-white text-slate-600"><ChevronRight size={16}/></button>
+              <button onClick={() => setPage(p => Math.max(p - 1, 1))} className="p-1 border border-slate-200 rounded-lg bg-white text-slate-400 disabled:opacity-50" disabled={page === 1}><ChevronLeft size={12}/></button>
+              <button className={`px-2 py-0.5 rounded-lg ${page === 1 ? 'bg-blue-600 text-white' : 'bg-white border border-slate-200'}`} onClick={() => setPage(1)}>1</button>
+              <button className={`px-2 py-0.5 rounded-lg ${page === 2 ? 'bg-blue-600 text-white' : 'bg-white border border-slate-200'}`} onClick={() => setPage(2)}>2</button>
+              <span className="px-0.5 text-slate-300">...</span>
+              <button onClick={() => setPage(p => p + 1)} className="p-1 border border-slate-200 rounded-lg bg-white text-slate-600"><ChevronRight size={12}/></button>
             </div>
           </footer>
         )}
