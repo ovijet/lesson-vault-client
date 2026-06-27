@@ -83,16 +83,16 @@ export default function AddLessonPage() {
     };
 
     try {
-      const res = await fetch(
-        `process.env.NEXT_PUBLIC_SERVER_URL/addLesson`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(lessonData),
-        }
-      );
+     const res = await fetch(
+  `${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(lessonData),
+  }
+);
 
       const data = await res.json();
 
