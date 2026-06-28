@@ -10,17 +10,21 @@ import {
 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
-const LikeLove = ({data}) => {
-  // লাইক এবং হার্ট এর জন্য আলাদা স্টেট এবং অ্যাক্টিভ ট্র্যাকিং
+const LikeLove = ({ lessonData: data, lessonId: id }) => {
+ 
   const [likes, setLikes] = useState(1);
   const [hasLiked, setHasLiked] = useState(false);
+  const [hasReported, setHasReported] = useState(false);
 
   const { data: session } = authClient.useSession();
 
   const [hearts, setHearts] = useState(1);
   const [hasHearted, setHasHearted] = useState(false);
 
-  // লাইক ক্লিক হ্যান্ডলার (Toggle Logic)
+  console.log(data,'oooooooooooooo');
+  console.log(id,'ooccccccccccccccc');
+
+  
   const handleLike = () => {
     if (hasLiked) {
       setLikes(likes - 1);
@@ -30,19 +34,31 @@ const LikeLove = ({data}) => {
     setHasLiked(!hasLiked);
   };
 
-  // হার্ট ক্লিক হ্যান্ডলার (Toggle Logic)
-//   const handleHeart = () => {
-//     if (hasHearted) {
-//       setHearts(hearts - 1);
-//     } else {
-//       setHearts(hearts + 1);
-//     }
-//     setHasHearted(!hasHearted);
-//   };
 
 
 const handleHeart = async () => {
-  if (!session) return;
+ 
+  if (!session?.user) {
+    toast.error("Please login first to add favorites!");
+    return;
+  }
+
+  
+  const currentLessonId = id; 
+  const userEmail = session?.user?.email;
+
+  console.log("Sending Favorite Data ->", { lessonId: currentLessonId, email: userEmail });
+
+  
+  if (!currentLessonId) {
+    toast.error("Lesson ID is missing!");
+    return;
+  }
+
+  if (hasHearted) {
+    toast.info("Already added to favorites");
+    return;
+  }
 
   try {
     const res = await fetch(
@@ -53,11 +69,11 @@ const handleHeart = async () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          lessonId: data._id,
-          title: data.title,
-          image: data.image,
-          category: data.category,
-          email: session.user.email,
+          lessonId: currentLessonId, 
+          title: data?.title || "Untitled Lesson",
+          image: data?.image || "",
+          category: data?.category || "General",
+          email: userEmail, 
           createdAt: new Date(),
         }),
       }
@@ -65,19 +81,73 @@ const handleHeart = async () => {
 
     const result = await res.json();
 
-    if (resu.success) {
+    if (res.ok) {
       setHasHearted(true);
-      toast.success("Added to Favorite");
+      setHearts(hearts + 1); 
+      toast.success("Added to Favorites!");
+    } else {
+      toast.error(result?.message || "Failed to add");
     }
   } catch (err) {
-    toast.error( "Failed");
+    console.error("Fetch Error:", err);
+    toast.error("Something went wrong!");
   }
 };
 
-  // শেয়ার হ্যান্ডলার
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    alert('Link copied to clipboard!');
+    toast('Link copied to clipboard!');
+  };
+
+const handleReport = async () => {
+    if (!session?.user) {
+      toast.error("Please login first to report this lesson!");
+      return;
+    }
+
+    const currentLessonId = id; 
+    const userEmail = session?.user?.email;
+
+    if (!currentLessonId) {
+      toast.error("Lesson ID is missing!");
+      return;
+    }
+
+    if (hasReported) {
+      toast.info("You have already reported this lesson!");
+      return;
+    }
+
+    try {
+      
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/reports`, 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            lessonId: currentLessonId, 
+            title: data?.title || "Untitled Lesson",
+            email: userEmail, 
+            createdAt: new Date(),
+          }),
+        }
+      );
+
+      const result = await res.json();
+
+      if (res.ok) {
+        setHasReported(true); // বাটনটি লাভ এর মতো লাল করে দেবে
+        toast.success("Lesson reported successfully!");
+      } else {
+        toast.error(result?.message || "Failed to report");
+      }
+    } catch (err) {
+      console.error("Report Error:", err);
+      toast.error("Something went wrong while reporting!");
+    }
   };
 
   return (
@@ -119,7 +189,7 @@ const handleHeart = async () => {
 
       {/* --- REPORT / FLAG BUTTON --- */}
       <button
-        onClick={() => alert('Reported this lesson')}
+        onClick={handleReport}
         className="flex items-center justify-center p-2.5 rounded-full bg-white/80 text-gray-400 hover:text-red-500 hover:bg-white border border-gray-100/50 shadow-sm transition-all"
       >
         <FiFlag className="w-4 h-4" />

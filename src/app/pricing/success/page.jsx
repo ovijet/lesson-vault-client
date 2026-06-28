@@ -99,7 +99,7 @@ export default function SuccessPage({ customerEmail }) {
             </button>
           </Link>
             <br />
-          <Link href="/dashboard">
+          <Link href="/">
             <button className="w-full border-2 border-green-600 text-green-700 hover:bg-green-50 py-5 rounded-2xl font-bold text-xl flex justify-center items-center gap-3 transition">
               <Home size={24} />
               Return to Home

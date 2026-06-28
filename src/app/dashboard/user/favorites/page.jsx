@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { FiHeart, FiTrash2, FiArrowRight, FiCalendar, FiLoader } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
+import Link from 'next/link';
 
 const SavedCollection = () => {
   const { data: session, isPending } = authClient.useSession();
@@ -17,7 +18,7 @@ const SavedCollection = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedTone, setSelectedTone] = useState('All Tones');
 
-  // ডাটাবেজ থেকে ফেভারিট ডাটা তুলে আনা (আগের GET route অনুযায়ী)
+  // ডাটাবেজ থেকে ফেভারিট ডাটা তুলে আনা 
   const fetchFavorites = async () => {
     if (!user?.email) return;
     try {
@@ -38,24 +39,22 @@ const SavedCollection = () => {
     }
   }, [user]);
 
-  // ট্র্যাশ বা ডিলিট বাটনে ক্লিক করলে রিমুভ করার ফাংশন (POST route অনুযায়ী)
-  const handleRemoveFavorite = async (lessonId) => {
+  
+  const handleRemoveFavorite = async (favoriteId) => {
     try {
-      const res = await fetch(`${serverUrl}/add-to-favorites`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: user.email,
-          lessonId: lessonId,
-        }),
+      const res = await fetch(`${serverUrl}/my-favorites/${favoriteId}`, {
+        method: 'DELETE',
       });
 
       if (res.ok) {
         toast.success("Removed from collection");
         // ডিলিট করার পর লিস্ট রিফ্রেশ করা
         fetchFavorites();
+      } else {
+        toast.error("Failed to remove item");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Could not remove item");
     }
   };
@@ -74,7 +73,7 @@ const SavedCollection = () => {
       
       <div className="max-w-6xl mx-auto">
         
-        {/* --- HEADER SECTION ({1B0A56D4-CC84-40F7-A16C-D76D105F4DE6}.jpg এর মতো) --- */}
+        {/* --- HEADER SECTION --- */}
         <header className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="bg-[#E2ECE2] p-2.5 rounded-xl text-[#2A4D38]">
@@ -114,7 +113,7 @@ const SavedCollection = () => {
         {favorites.length > 0 ? (
           <div className="bg-white rounded-[32px] shadow-sm border border-[#E2ECE2] overflow-hidden">
             
-            {/* টেবিল হেডার রো */}
+            {/* টেবিল হেডার રો */}
             <div className="grid grid-cols-12 bg-[#FBFDFB] px-8 py-4 border-b border-[#F0EFEF] text-[11px] font-bold text-[#A3B2A4] tracking-wider uppercase">
               <div className="col-span-5">Wisdom Context</div>
               <div className="col-span-3">Author</div>
@@ -157,11 +156,11 @@ const SavedCollection = () => {
                     </div>
                     <div>
                       <div className="text-sm font-bold text-[#1E3326] leading-tight">{user?.name || 'Admin'}</div>
-                      <div className="text-xs text-[#7A8A7D]">{user?.email || 'admin@gmail.com'}</div>
+                      <div className="text-xs text-[#7A8A7D]">{lesson.email}</div>
                     </div>
                   </div>
 
-                  {/* ৩. SAVED DATE (ছবিতে যেমন সুন্দর বক্সে আছে) */}
+                  {/* ৩. SAVED DATE */}
                   <div className="col-span-2">
                     <div className="inline-flex items-center gap-1.5 bg-white border border-[#E2ECE2] rounded-xl px-3 py-1.5 shadow-sm text-xs font-semibold text-[#55665A]">
                       <FiCalendar className="text-gray-300" />
@@ -170,17 +169,20 @@ const SavedCollection = () => {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric'
-                        }) : 'Jun 27, 2026'}
+                        }) : 'Jun 28, 2026'}
                       </span>
                     </div>
                   </div>
 
-                  {/* ৪. ACTIONS (ডান পাশের রাউন্ডেড গোল বাটনসমূহ) */}
+                  {/* ৪. ACTIONS */}
                   <div className="col-span-2 flex items-center justify-end gap-2 pr-2">
                     {/* ডিটেইলসে যাওয়ার বাটন */}
-                    <button className="w-9 h-9 flex items-center justify-center rounded-full bg-[#1E3326] text-white hover:bg-[#2A4D38] shadow-sm transition-all">
+                    <Link 
+                      href={`/addLesson/${lesson.lessonId}`} 
+                      className="w-9 h-9 flex items-center justify-center rounded-full bg-[#1E3326] text-white hover:bg-[#2A4D38] shadow-sm transition-all"
+                    >
                       <FiArrowRight className="w-4 h-4" />
-                    </button>
+                    </Link>
 
                     {/* ডিলিট বাটন */}
                     <button 
