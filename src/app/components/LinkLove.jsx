@@ -139,7 +139,7 @@ const handleReport = async () => {
       const result = await res.json();
 
       if (res.ok) {
-        setHasReported(true); // বাটনটি লাভ এর মতো লাল করে দেবে
+        setHasReported(true); 
         toast.success("Lesson reported successfully!");
       } else {
         toast.error(result?.message || "Failed to report");
@@ -151,7 +151,7 @@ const handleReport = async () => {
   };
 
   return (
-    <div className="flex items-center gap-3 p-4 bg-[#FAF6F0] rounded-xl w-fit">
+    <div className="flex mx-auto mt-3 items-center gap-3 p-4 bg-[#FAF6F0] rounded-xl w-fit">
       
       {/* --- LIKE BUTTON --- */}
       <button

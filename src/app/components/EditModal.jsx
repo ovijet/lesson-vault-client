@@ -79,8 +79,8 @@ const EditModal = ({ lesson }) => {
 
     try {
   const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson/${lesson._id}`;
-  console.log("Fetching URL:", url);         // URL দেখো
-  console.log("Payload:", lessonData);       // Data দেখো
+  console.log("Fetching URL:", url);         
+  console.log("Payload:", lessonData);       
 
   const res = await fetch(url, {
     method: "PATCH",

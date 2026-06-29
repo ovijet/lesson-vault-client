@@ -3,6 +3,8 @@ import Banner from "./components/Banner";
 import PublicLessonsPage from "./public-lessons/page";
 import TopContributors from "./components/TopContributors";
 import AddLesson from "./components/AddLesson";
+import HowItWorks from "./components/Work";
+import ExploreCategories from "./components/Expolore";
 
 
 const dns = require("node:dns");
@@ -14,6 +16,8 @@ export default function Home() {
       <Banner/>
       {/* <PublicLessonsPage/> */}
     <AddLesson/>
+    <HowItWorks/>
+    <ExploreCategories/>
       <TopContributors/>
     </div>
   );

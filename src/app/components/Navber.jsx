@@ -19,26 +19,28 @@ const Navbar = () => {
   const user = session?.user;
   const role = user?.role || "user";
 
-  const navLinks = [
+  // dynamic links generation (Avoids array mutation bugs)
+  const baseLinks = [
     { name: "Home", href: "/" },
     { name: "Public Lessons", href: "/public-lessons" },
   ];
 
-  // Dynamic links based on Auth state
-  if (user) {
-    navLinks.push(
-      { name: "Add Lesson", href: "/dashboard/user/add-lesson" },
-      { name: "My Lessons", href: "/dashboard/user/my-lesson" },
-      { name: "Favorites", href: "/dashboard/user/favorites" }
-    );
-  }
+  const userLinks = user
+    ? [
+        { name: "Add Lesson", href: "/dashboard/user/add-lesson" },
+        { name: "My Lessons", href: "/dashboard/user/my-lesson" },
+        { name: "Favorites", href: "/dashboard/user/favorites" },
+      ]
+    : [];
 
-  if (user?.role === "admin") {
-    navLinks.push(
-      { name: "Manage Lessons", href: "/dashboard/admin/manage-lessons" },
-      { name: "Manage Users", href: "/dashboard/admin/manage-users" }
-    );
-  }
+  const adminLinks = user?.role === "admin"
+    ? [
+        { name: "Manage Lessons", href: "/dashboard/admin/manage-lessons" },
+        { name: "Manage Users", href: "/dashboard/admin/manage-users" },
+      ]
+    : [];
+
+  const navLinks = [...baseLinks, ...userLinks, ...adminLinks];
 
   const handleSignOut = async () => {
     const { error } = await authClient.signOut();
@@ -48,11 +50,11 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100/80 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100/80 shadow-sm select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Logo Section */}
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
           <motion.div
             whileHover={{ rotate: -8, scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 15 }}
@@ -60,20 +62,20 @@ const Navbar = () => {
           >
             <FaDigitalOcean className="text-white text-xl" />
           </motion.div>
-          <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:text-orange-500 transition-colors duration-200">
+          <span className="text-base sm:text-lg font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:text-orange-500 transition-colors duration-200 xs:inline-block">
             Digital Life Lessons
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1 mx-4 overflow-x-auto scrollbar-none">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`relative px-3.5 py-2 rounded-full text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
                   isActive
                     ? "bg-orange-500 text-white shadow-sm shadow-orange-500/10"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
@@ -86,7 +88,7 @@ const Navbar = () => {
         </nav>
 
         {/* Desktop CTA / User Dropdown */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
           {!user ? (
             <div className="flex items-center gap-2.5">
               <Link href="/login">
@@ -102,19 +104,19 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="relative">
-              <div className="flex items-center gap-3.5">
+              <div className="flex items-center gap-3">
                 {/* Premium Badge & Upgrade */}
                 {user?.plan === "premium" ? (
-                  <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3.5 py-1.5 shadow-sm">
+                  <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 rounded-full px-3 py-1 shadow-sm">
                     <span className="text-xs">💎</span>
-                    <span className="font-bold text-amber-700 tracking-wider uppercase text-[11px]">
+                    <span className="font-bold text-amber-700 tracking-wider uppercase text-[10px]">
                       Premium
                     </span>
                   </div>
                 ) : (
                   <Link
                     href="/pricing"
-                    className="px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-semibold hover:opacity-95 shadow-sm shadow-orange-500/10 transition"
+                    className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-bold hover:opacity-95 shadow-sm shadow-orange-500/10 transition"
                   >
                     Upgrade ✨
                   </Link>
@@ -123,19 +125,19 @@ const Navbar = () => {
                 {/* Avatar Control */}
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 border border-gray-200 rounded-full p-1 pr-3 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
+                  className="flex items-center gap-2 border border-gray-200/80 rounded-full p-1 pr-3 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
                 >
-                  <Avatar size="sm" className="w-7 h-7 ring-2 ring-gray-100">
+                  <Avatar size="sm" className="w-7 h-7 ring-2 ring-gray-100 flex-shrink-0">
                     <Avatar.Image src={user?.image} referrerPolicy="no-referrer" />
                     <Avatar.Fallback className="bg-orange-100 text-orange-600 font-bold text-xs">
-                      {user?.name?.charAt(0)}
+                      {user?.name?.charAt(0).toUpperCase()}
                     </Avatar.Fallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-gray-700 max-w-[100px] truncate">
+                  <span className="text-xs font-semibold text-gray-700 max-w-[80px] truncate0">
                     {user?.name?.split(" ")[0]}
                   </span>
                   <BiChevronDown
-                    className={`text-gray-400 transition-transform duration-200 ${
+                    className={`text-gray-400 text-base transition-transform duration-200 ${
                       isDropdownOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -161,7 +163,7 @@ const Navbar = () => {
                         <p className="font-semibold text-gray-900 text-sm truncate">{user?.name}</p>
                         <p className="text-xs text-gray-400 truncate mt-0.5">{user?.email}</p>
                         
-                        <div className="flex items-center gap-2 mt-3">
+                        <div className="flex items-center gap-2 mt-2.5">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                             role === "admin" ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-blue-50 text-blue-600 border border-blue-100"
                           }`}>
@@ -173,7 +175,7 @@ const Navbar = () => {
                       <div className="p-1.5 space-y-0.5">
                         <Link
                           href={role === "admin" ? "/dashboard/admin/profile" : "/dashboard/user/profile"}
-                          className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition"
+                          className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition"
                           onClick={() => setIsDropdownOpen(false)}
                         >
                           <BiUser className="text-lg text-gray-400" /> Profile
@@ -181,7 +183,7 @@ const Navbar = () => {
 
                         <Link
                           href={role === "admin" ? "/dashboard/admin" : "/dashboard/user"}
-                          className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition"
+                          className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition"
                           onClick={() => setIsDropdownOpen(false)}
                         >
                           <BiGridAlt className="text-lg text-gray-400" /> Dashboard
@@ -194,7 +196,7 @@ const Navbar = () => {
                             setIsDropdownOpen(false);
                             handleSignOut();
                           }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-rose-600 hover:bg-rose-50/60 rounded-xl transition font-medium"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-rose-600 hover:bg-rose-50/60 rounded-xl transition font-semibold"
                         >
                           <BiLogOut className="text-lg" /> Logout
                         </button>
@@ -210,7 +212,7 @@ const Navbar = () => {
         {/* Mobile Interactive Trigger */}
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="lg:hidden p-2 -mr-2 text-gray-600 hover:text-gray-900 transition"
+          className="lg:hidden p-2 -mr-2 text-gray-600 hover:text-gray-900 transition flex-shrink-0"
         >
           {isMobileOpen ? <HiX size={24} /> : <HiMenuAlt3 size={24} />}
         </button>
@@ -229,17 +231,19 @@ const Navbar = () => {
               
               {/* User Identity on Mobile */}
               {user && (
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl mb-3">
-                  <Avatar size="sm" className="w-9 h-9">
+                <div className="flex items-center gap-3 p-3 bg-gray-50/80 rounded-2xl mb-3">
+                  <Avatar size="sm" className="w-9 h-9 flex-shrink-0">
                     <Avatar.Image src={user?.image} referrerPolicy="no-referrer" />
-                    <Avatar.Fallback>{user?.name?.charAt(0)}</Avatar.Fallback>
+                    <Avatar.Fallback className="bg-orange-100 text-orange-600 font-bold">
+                      {user?.name?.charAt(0).toUpperCase()}
+                    </Avatar.Fallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-gray-900 truncate">{user?.name}</p>
                     <p className="text-xs text-gray-400 truncate">{user?.email}</p>
                   </div>
                   {user?.plan === "premium" && (
-                    <span className="text-sm bg-amber-100 px-2 py-0.5 rounded-full">💎</span>
+                    <span className="text-sm bg-amber-100 px-2 py-0.5 rounded-full flex-shrink-0">💎</span>
                   )}
                 </div>
               )}
@@ -252,7 +256,7 @@ const Navbar = () => {
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsMobileOpen(false)}
-                    className={`block px-4 py-3 text-sm font-medium rounded-xl transition ${
+                    className={`block px-4 py-2.5 text-sm font-semibold rounded-xl transition ${
                       isActive
                         ? "bg-orange-50 text-orange-600"
                         : "text-gray-600 hover:bg-gray-50"
@@ -272,7 +276,7 @@ const Navbar = () => {
                     <Link
                       href="/pricing"
                       onClick={() => setIsMobileOpen(false)}
-                      className="flex items-center justify-between px-4 py-3 text-sm font-medium text-amber-800 bg-amber-50 border border-amber-100 rounded-xl"
+                      className="flex items-center justify-between px-4 py-2.5 text-sm font-bold text-amber-800 bg-amber-50 border border-amber-100 rounded-xl"
                     >
                       <span>Upgrade to Premium ✨</span>
                       <BiStar className="text-lg" />
@@ -281,14 +285,14 @@ const Navbar = () => {
                   <Link
                     href={role === "admin" ? "/dashboard/admin/profile" : "/dashboard/user/profile"}
                     onClick={() => setIsMobileOpen(false)}
-                    className="block px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-xl"
+                    className="block px-4 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 rounded-xl"
                   >
                     Your Profile
                   </Link>
                   <Link
                     href={role === "admin" ? "/dashboard/admin" : "/dashboard/user"}
                     onClick={() => setIsMobileOpen(false)}
-                    className="block px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-xl"
+                    className="block px-4 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 rounded-xl"
                   >
                     Dashboard Home
                   </Link>
@@ -297,7 +301,7 @@ const Navbar = () => {
                       setIsMobileOpen(false);
                       handleSignOut();
                     }}
-                    className="w-full text-left px-4 py-3 text-sm font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition"
+                    className="w-full text-left px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition"
                   >
                     Logout
                   </button>
@@ -305,12 +309,12 @@ const Navbar = () => {
               ) : (
                 <div className="grid grid-cols-2 gap-2.5 pt-2">
                   <Link href="/login" onClick={() => setIsMobileOpen(false)} className="w-full">
-                    <button className="w-full py-3 text-sm font-medium text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+                    <button className="w-full py-2.5 text-sm font-semibold text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
                       Login
                     </button>
                   </Link>
                   <Link href="/register" onClick={() => setIsMobileOpen(false)} className="w-full">
-                    <button className="w-full py-3 text-sm font-medium bg-gray-900 text-white rounded-xl hover:bg-orange-500 transition">
+                    <button className="w-full py-2.5 text-sm font-semibold bg-gray-900 text-white rounded-xl hover:bg-orange-500 transition-all">
                       Register
                     </button>
                   </Link>

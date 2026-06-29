@@ -4,107 +4,102 @@ import Link from "next/link";
 import { Mail, Phone } from "lucide-react";
 import { FaXTwitter, FaFacebook, FaGithub } from "react-icons/fa6";
 import { usePathname } from "next/navigation";
+import { FaDigitalOcean } from "react-icons/fa";
 
 export default function Footer() {
+  const pathName = usePathname();
 
-  
-    const pathName=usePathname();
-    if(pathName.includes("/dashboard")){
-      return null; // Don't render the footer on dashboard pages
-    }
+  // ড্যাশবোর্ড পেজগুলোতে ফুটার হাইড রাখার লজিক
+  if (pathName.startsWith("/dashboard") || pathName.includes("/manage-users")) {
+    return null; 
+  }
   
   return (
-    <footer className="bg-gray-950 text-gray-300 mt-10">
-      <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-4 gap-8">
+    <footer className="bg-slate-50 border-t border-slate-200/80 text-slate-600 mt-16 w-full font-sans select-none">
+      <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
 
-        {/* Logo + Name */}
-        <div>
-          <div className="flex items-center gap-2">
-            <img
-              src="/logo.png"
-              alt="Logo"
-              className="w-10 h-10 rounded"
-            />
-            <h2 className="text-white text-lg font-bold">
+        {/* Brand Information */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2.5">
+            <FaDigitalOcean />
+            <h2 className="text-slate-900 text-lg font-bold tracking-tight">
               MyWebsite
             </h2>
           </div>
-          <p className="text-sm mt-3 text-gray-400">
-            Build your future with us.
+          <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
+            Build your future with us. Crafting absolute secure structures and premium web experiences.
           </p>
         </div>
 
-        {/* Contact Info */}
+        {/* Contact Links */}
         <div>
-          <h3 className="text-white font-semibold mb-3">Contact</h3>
-
-          <p className="flex items-center gap-2 text-sm">
-            <Mail size={16} /> support@mywebsite.com
-          </p>
-
-          <p className="flex items-center gap-2 text-sm mt-2">
-            <Phone size={16} /> +880 1XXXXXXXXX
-          </p>
+          <h3 className="text-slate-900 font-bold text-sm uppercase tracking-wider mb-4">Contact Us</h3>
+          <div className="flex flex-col gap-2.5 text-sm font-medium">
+            <p className="flex items-center gap-2.5 text-slate-600 hover:text-orange-500 transition-colors duration-200 cursor-pointer">
+              <Mail size={16} className="text-slate-400" /> support@mywebsite.com
+            </p>
+            <p className="flex items-center gap-2.5 text-slate-600 hover:text-orange-500 transition-colors duration-200 cursor-pointer">
+              <Phone size={16} className="text-slate-400" /> +880 1XXXXXXXXX
+            </p>
+          </div>
         </div>
 
-        {/* Terms */}
+        {/* Legal Mapping */}
         <div>
-          <h3 className="text-white font-semibold mb-3">
-            Legal
+          <h3 className="text-slate-900 font-bold text-sm uppercase tracking-wider mb-4">
+            Legal Structure
           </h3>
-
-          <ul className="space-y-2 text-sm">
+          <ul className="flex flex-col gap-2.5 text-sm font-medium">
             <li>
-              <Link href="/terms" className="hover:text-white">
+              <Link href="/terms" className="text-slate-600 hover:text-orange-500 transition-colors duration-200">
                 Terms & Conditions
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="hover:text-white">
+              <Link href="/privacy" className="text-slate-600 hover:text-orange-500 transition-colors duration-200">
                 Privacy Policy
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Social Links */}
+        {/* Social Ecosystem */}
         <div>
-          <h3 className="text-white font-semibold mb-3">
-            Follow Us
+          <h3 className="text-slate-900 font-bold text-sm uppercase tracking-wider mb-4">
+            Follow Ecosystem
           </h3>
-
-          <div className="flex gap-4 text-xl">
-            {/* X (Twitter replacement) */}
+          <div className="flex gap-3.5 text-xl">
             <a
               href="https://x.com"
               target="_blank"
-              className="hover:text-white"
+              rel="noopener noreferrer"
+              className="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-orange-500 hover:border-orange-500/30 hover:shadow-sm transition-all duration-200"
             >
-              <FaXTwitter />
+              <FaXTwitter size={18} />
             </a>
-
             <a
               href="https://facebook.com"
               target="_blank"
-              className="hover:text-white"
+              rel="noopener noreferrer"
+              className="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-orange-500 hover:border-orange-500/30 hover:shadow-sm transition-all duration-200"
             >
-              <FaFacebook />
+              <FaFacebook size={18} />
             </a>
-
             <a
               href="https://github.com"
               target="_blank"
-              className="hover:text-white"
+              rel="noopener noreferrer"
+              className="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-orange-500 hover:border-orange-500/30 hover:shadow-sm transition-all duration-200"
             >
-              <FaGithub />
+              <FaGithub size={18} />
             </a>
           </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-gray-800 text-center py-4 text-sm text-gray-500">
-        © {new Date().getFullYear()} MyWebsite. All rights reserved.
+      {/* Absolute Bottom Copyright Bar */}
+      <div className="border-t border-slate-200/60 bg-slate-100/50 text-center py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        © {new Date().getFullYear()} MyWebsite. All absolute rights reserved.
       </div>
     </footer>
   );

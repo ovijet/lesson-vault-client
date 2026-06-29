@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { BookOpen, Search, RotateCcw, Star, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { DeleteModal } from "@/app/components/DeleteModal";
+import EditModal from "@/app/components/ManageReview";
+import ManageReview from "@/app/components/ManageReview";
 
 export default function LessonsPage() {
   const [lessons, setLessons] = useState([]);
@@ -77,7 +79,7 @@ export default function LessonsPage() {
       {/* ১. টপ মেট্রিক্স কার্ডস - কম্প্যাক্ট উইডথ ও হাইট */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 mb-6">
         <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
-          <div className="p-2 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="p-2 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl flex-shrink-0"><BookOpen size={16} /></div>
           <div className="min-w-0">
             <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Total</h3>
             <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{lessons.length}</p>
@@ -85,7 +87,7 @@ export default function LessonsPage() {
         </div>
 
         <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
-          <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg sm:rounded-xl flex-shrink-0"><BookOpen size={16} /></div>
           <div className="min-w-0">
             <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Public</h3>
             <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{publicLessonsCount}</p>
@@ -93,7 +95,7 @@ export default function LessonsPage() {
         </div>
 
         <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
-          <div className="p-2 bg-purple-50 text-purple-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="p-2 bg-purple-50 text-purple-600 rounded-lg sm:rounded-xl flex-shrink-0"><BookOpen size={16} /></div>
           <div className="min-w-0">
             <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Private</h3>
             <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{privateLessonsCount}</p>
@@ -101,7 +103,7 @@ export default function LessonsPage() {
         </div>
 
         <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
-          <div className="p-2 bg-orange-50 text-orange-600 rounded-lg sm:rounded-xl"><BookOpen size={16} /></div>
+          <div className="p-2 bg-orange-50 text-orange-600 rounded-lg sm:rounded-xl flex-shrink-0"><BookOpen size={16} /></div>
           <div className="min-w-0">
             <h3 className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Reported</h3>
             <p className="text-base sm:text-xl font-black text-slate-800 leading-none mt-0.5">{reportedLessonsCount}</p>
@@ -117,19 +119,19 @@ export default function LessonsPage() {
 
       {/* ২. ফিল্টার এবং সার্চ বার সেকশন - টাইট গ্রিড */}
       <div className="bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between mb-5">
-        <div className="grid grid-cols-3 gap-2 w-full md:w-auto">
-          <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
+          <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold cursor-pointer w-full">
             <option>All Categories</option>
             <option>Mindset</option>
             <option>Life</option>
             <option>Success</option>
           </select>
-          <select value={visibility} onChange={(e) => { setVisibility(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold">
+          <select value={visibility} onChange={(e) => { setVisibility(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold cursor-pointer w-full">
             <option>All Visibility</option>
             <option>Public</option>
             <option>Private</option>
           </select>
-          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold">
+          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold cursor-pointer w-full">
             <option>All Status</option>
             <option>Reviewed</option>
             <option>Not Reviewed</option>
@@ -138,10 +140,10 @@ export default function LessonsPage() {
 
         <div className="flex gap-2 items-center w-full md:w-auto">
           <div className="relative flex-1 md:w-56 lg:w-64">
-            <Search className="absolute left-2.5 top-2 text-slate-400" size={13} />
+            <Search className="absolute left-2.5 top-2.5 text-slate-400" size={13} />
             <input type="text" placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="w-full pl-7 pr-3 py-1.5 border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
           </div>
-          <button onClick={handleReset} className="border border-slate-200 text-slate-600 px-2.5 py-1.5 rounded-lg text-[11px] font-bold hover:bg-slate-50 transition flex items-center gap-1 active:scale-95 ml-auto">
+          <button onClick={handleReset} className="border border-slate-200 text-slate-600 px-2.5 py-1.5 rounded-lg text-[11px] font-bold hover:bg-slate-50 transition flex items-center gap-1 active:scale-95 shrink-0">
             <RotateCcw size={11} /> Reset
           </button>
         </div>
@@ -149,12 +151,13 @@ export default function LessonsPage() {
 
       {/* ৩. আল্ট্রা-কম্প্যাক্ট টেবিল লেআউট */}
       <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
-        <div className="w-full overflow-x-auto block">
+        {/* টেবিলের বাইরের কন্টেইনারে overflow-x-auto নিশ্চিত করা হয়েছে */}
+        <div className="w-full overflow-x-auto whitespace-nowrap block">
           <table className="w-full text-left border-collapse table-auto">
             <thead>
               <tr className="bg-slate-50/80 text-slate-500 font-bold text-[10px] uppercase tracking-wider border-b border-slate-200">
                 <th className="p-3 w-10 text-center">#</th>
-                <th className="p-3 max-w-[180px]">Title / Info</th>
+                <th className="p-3 min-w-[180px]">Title / Info</th>
                 <th className="p-3">Category</th>
                 <th className="p-3">Visibility</th>
                 <th className="p-3">Access</th>
@@ -169,7 +172,7 @@ export default function LessonsPage() {
                 <tr key={lesson._id} className="hover:bg-slate-50/30 transition-all">
                   <td className="p-2.5 text-center text-slate-400 font-normal">{idx + 1}</td>
                   <td className="p-2.5">
-                    <div className="flex items-center gap-2 max-w-[180px]">
+                    <div className="flex items-center gap-2 max-w-[180px] whitespace-normal">
                       <div className="w-7 h-7 rounded-lg overflow-hidden border border-slate-200/60 flex-shrink-0 bg-slate-50">
                         {lesson.image ? (
                           <img src={lesson.image} alt={lesson.title} className="w-full h-full object-cover" />
@@ -211,7 +214,7 @@ export default function LessonsPage() {
                         <Star size={10}/> Feature
                       </button>
                       <button onClick={() => handleReview(lesson._id)} className="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] px-2 py-1 rounded-lg flex items-center gap-0.5 font-bold shadow-sm active:scale-95 transition-all">
-                        <CheckCircle size={10}/> Review
+                    <ManageReview lesson={lesson}/>
                       </button>
                       <DeleteModal lesson={lesson} />
                     </div>
@@ -222,7 +225,7 @@ export default function LessonsPage() {
           </table>
         </div>
 
-        {/* নো লেসন ফাউন্ড স্টেট */}
+       
         {lessons.length === 0 && (
           <div className="py-12 text-center bg-white">
             <BookOpen size={40} className="mx-auto text-slate-200 mb-2" />
@@ -230,7 +233,7 @@ export default function LessonsPage() {
           </div>
         )}
 
-        {/* ৪. প্যাজিনেশন ফুটার */}
+      
         {lessons.length > 0 && (
           <footer className="p-3 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] text-slate-500 font-bold">
             <div>Showing {lessons.length} items</div>
