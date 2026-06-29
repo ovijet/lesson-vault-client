@@ -37,11 +37,11 @@ export default function ManageUsers() {
       });
   };
 
-  // Make Admin Handler
-  const handleMakeAdmin = async (userId) => {
+  // Role Toggle Handler (Admin <-> User)
+  const handleToggleRole = async (userId) => {
     setActionLoadingId(userId);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/make-admin/${userId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/toggle-role/${userId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -50,15 +50,15 @@ export default function ManageUsers() {
       
       const data = await res.json();
 
-      if (res.ok) {
-        toast.success("User promoted to Admin successfully!");
+      if (res.ok && data.success) {
+        toast.success(`User role updated to ${data.newRole}! ✨`);
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
-            user._id === userId ? { ...user, role: "admin" } : user
+            user._id === userId ? { ...user, role: data.newRole } : user
           )
         );
       } else {
-        toast.error(data?.message || "Failed to make admin");
+        toast.error(data?.message || "Failed to update role");
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -79,7 +79,7 @@ export default function ManageUsers() {
   const proPlans = users.filter(u => u.plan?.toLowerCase() === "pro").length;
 
   return (
-    <div className="p-4 sm:p-8 max-w-7xl mx-auto min-h-screen bg-slate-50/50 dark:bg-slate-950/20 select-none">
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto min-h-screen bg-slate-50/50 dark:bg-slate-950/20 select-none font-sans">
       
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -146,7 +146,6 @@ export default function ManageUsers() {
 
             <tbody>
               {loading ? (
-                // Smooth Shimmer Loading Blocks
                 [...Array(4)].map((_, i) => (
                   <tr key={`skeleton-${i}`} className="animate-pulse border-b border-slate-100 dark:border-slate-800/50">
                     <td className="py-4 px-6">
@@ -163,7 +162,7 @@ export default function ManageUsers() {
                 ))
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="py-12 text-center text-sm font-medium text-slate-400">
+                  <td colSpan={5} className="py-12 text-center text-sm font-medium text-slate-400">
                     No users matched your criteria.
                   </td>
                 </tr>
@@ -187,7 +186,7 @@ export default function ManageUsers() {
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
                                   e.currentTarget.style.display = 'none';
-                                  e.currentTarget.parentElement.innerHTML = `<span className="font-bold text-sm text-slate-500">${user.name?.charAt(0).toUpperCase()}</span>`;
+                                  e.currentTarget.parentElement.innerHTML = `<span class="font-bold text-sm text-slate-500">${user.name?.charAt(0).toUpperCase()}</span>`;
                                 }}
                               />
                             ) : (
@@ -228,27 +227,29 @@ export default function ManageUsers() {
                         </div>
                       </td>
 
-                      {/* Dynamic Action Controls */}
+                      {/* Dynamic Toggle Action Controls */}
                       <td className="py-3.5 px-6 text-right">
-                        {isAdmin ? (
-                          <div className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-3 py-1.5 rounded-xl border border-emerald-200/40 dark:border-emerald-800/30 text-xs font-bold shadow-sm">
-                            <BiCrown className="text-sm" /> Admin Master
-                          </div>
-                        ) : (
-                          <button
-                            disabled={actionLoadingId === user._id}
-                            onClick={() => handleMakeAdmin(user._id)}
-                            className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl text-xs px-4 py-2 inline-flex items-center gap-1.5 shadow-md shadow-orange-500/10 hover:opacity-95 active:scale-95 transition-all duration-200 disabled:opacity-50"
-                          >
-                            {actionLoadingId === user._id ? (
-                              "Processing..."
-                            ) : (
-                              <>
-                                <BiUserCheck className="text-base" /> Make Admin
-                              </>
-                            )}
-                          </button>
-                        )}
+                        <button
+                          disabled={actionLoadingId === user._id}
+                          onClick={() => handleToggleRole(user._id)}
+                          className={`font-semibold rounded-xl text-xs px-4 py-2 inline-flex items-center gap-1.5 shadow-md active:scale-95 transition-all duration-200 disabled:opacity-50 text-white ${
+                            isAdmin 
+                              ? "bg-gradient-to-r from-red-500 to-rose-600 shadow-red-500/10 hover:opacity-90" 
+                              : "bg-gradient-to-r from-orange-500 to-amber-500 shadow-orange-500/10 hover:opacity-95"
+                          }`}
+                        >
+                          {actionLoadingId === user._id ? (
+                            "Processing..."
+                          ) : isAdmin ? (
+                            <>
+                              <BiCrown className="text-base" /> Remove Admin
+                            </>
+                          ) : (
+                            <>
+                              <BiUserCheck className="text-base" /> Make Admin
+                            </>
+                          )}
+                        </button>
                       </td>
                     </tr>
                   );

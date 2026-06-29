@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { authClient } from "@/lib/auth-client";
+import { Button } from "@heroui/react";
 
 export default function AddLessonPage() {
   const router = useRouter();
@@ -15,7 +16,6 @@ export default function AddLessonPage() {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
@@ -25,22 +25,16 @@ export default function AddLessonPage() {
 
     try {
       setUploading(true);
-
       const formData = new FormData();
       formData.append("image", file);
 
       const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-
-      const res = await fetch(
-        `https://api.imgbb.com/1/upload?key=${apiKey}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: "POST",
+        body: formData,
+      });
 
       const data = await res.json();
-
       if (data.success) {
         setImageUrl(data.data.url);
         toast.success("Image uploaded successfully");
@@ -55,11 +49,9 @@ export default function AddLessonPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
-
     const lessonData = {
       title: form.get("title"),
       description: form.get("description"),
@@ -67,35 +59,25 @@ export default function AddLessonPage() {
       emotionalTone: form.get("emotionalTone"),
       visibility: form.get("visibility"),
       accessLevel: form.get("accessLevel"),
-
       image: imageUrl,
-
       isFeatured: false,
       isReviewed: false,
-        userEmail: session?.user?.email,
-  userName: session?.user?.name,
-  userId: session?.user?.id,
-
+      userEmail: session?.user?.email,
+      userName: session?.user?.name,
+      userId: session?.user?.id,
       likesCount: 0,
       favoritesCount: 0,
-
       createdAt: new Date(),
     };
 
     try {
-     const res = await fetch(
-  `${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson`,
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(lessonData),
-  }
-);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/addLesson`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lessonData),
+      });
 
       const data = await res.json();
-
       if (data.insertedId) {
         toast.success("Lesson Added Successfully");
         router.push("/dashboard/user/my-lesson");
@@ -109,199 +91,160 @@ export default function AddLessonPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-2">
-          Add New Life Lesson
-        </h1>
+    <div className="min-h-screen bg-gray-50/60 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-3xl mx-auto bg-white border border-gray-100 rounded-2xl shadow-xl shadow-gray-100/40 p-8 sm:p-10">
+        
+        {/* Header section */}
+        <div className="mb-10">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            Add New Life Lesson
+          </h1>
+          <p className="mt-2 text-sm text-gray-500">
+            Share your unique wisdom, life realizations, and core experiences with the community.
+          </p>
+        </div>
 
-        <p className="text-gray-500 mb-8">
-          Share your wisdom and life experience with others.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-
+        <form onSubmit={handleSubmit} className="space-y-8">
+          
           {/* Title */}
           <div>
-            <label className="font-medium mb-2 block">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Lesson Title
             </label>
-
             <input
               type="text"
               name="title"
               required
-              placeholder="Enter lesson title"
-              className="w-full border rounded-xl p-3"
+              placeholder="e.g., Embracing failure as a stepping stone"
+              className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-3.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="font-medium mb-2 block">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Lesson Description
             </label>
-
             <textarea
               rows={6}
               name="description"
               required
-              placeholder="Write your lesson..."
-              className="w-full border rounded-xl p-3"
+              placeholder="Deeply explain your story or perspective here..."
+              className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-3.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all resize-none"
             />
           </div>
 
-          {/* Image Upload */}
+          {/* Image Upload Area */}
           <div>
-            <label className="font-medium mb-3 block">
-              Lesson Image
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Cover Image
             </label>
-
-            <div className="flex items-center gap-4">
-              <label className="w-24 h-24 border-2 border-dashed rounded-xl cursor-pointer overflow-hidden flex items-center justify-center">
+            <div className="flex items-center gap-5 p-4 bg-gray-50/40 border border-gray-100 rounded-xl">
+              <label className="group relative w-24 h-24 border-2 border-dashed border-gray-200 hover:border-purple-400 rounded-xl cursor-pointer overflow-hidden flex items-center justify-center bg-white transition-all">
                 <input
                   type="file"
                   accept="image/*"
                   className="hidden"
                   onChange={handleImageUpload}
                 />
-
                 {imageUrl ? (
                   <img
                     src={imageUrl}
-                    alt="lesson"
-                    className="w-full h-full object-cover"
+                    alt="lesson thumbnail"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   />
                 ) : (
-                  <span className="text-4xl text-gray-400">
-                    +
-                  </span>
+                  <span className="text-2xl text-gray-400 group-hover:text-purple-500 transition-colors">+</span>
                 )}
               </label>
 
               <div>
-                <p className="font-medium">
-                  {uploading
-                    ? "Uploading..."
-                    : "Upload Image"}
+                <p className="text-sm font-medium text-gray-800">
+                  {uploading ? "Uploading, please wait..." : "Choose a display cover"}
                 </p>
-
-                <p className="text-sm text-gray-500">
-                  PNG, JPG up to 5MB
+                <p className="text-xs text-gray-400 mt-1">
+                  Supports PNG, JPG, WebP formats up to 5MB
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Category */}
-          <div>
-            <label className="font-medium mb-2 block">
-              Category
-            </label>
+          {/* Dropdown Options Grid */}
+          <div className="grid sm:grid-cols-2 gap-6">
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                name="category"
+                className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all cursor-pointer"
+              >
+                <option value="Personal Growth">Personal Growth</option>
+                <option value="Career">Career</option>
+                <option value="Relationships">Relationships</option>
+                <option value="Mindset">Mindset</option>
+                <option value="Mistakes Learned">Mistakes Learned</option>
+              </select>
+            </div>
 
-            <select
-              name="category"
-              className="w-full border rounded-xl p-3"
-            >
-              <option value="Personal Growth">
-                Personal Growth
-              </option>
+            {/* Emotional Tone */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Emotional Tone
+              </label>
+              <select
+                name="emotionalTone"
+                className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all cursor-pointer"
+              >
+                <option value="Motivational">Motivational</option>
+                <option value="Sad">Sad</option>
+                <option value="Realization">Realization</option>
+                <option value="Gratitude">Gratitude</option>
+              </select>
+            </div>
 
-              <option value="Career">
-                Career
-              </option>
+            {/* Visibility */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Visibility
+              </label>
+              <select
+                name="visibility"
+                className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all cursor-pointer"
+              >
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </select>
+            </div>
 
-              <option value="Relationships">
-                Relationships
-              </option>
-
-              <option value="Mindset">
-                Mindset
-              </option>
-
-              <option value="Mistakes Learned">
-                Mistakes Learned
-              </option>
-            </select>
+            {/* Access Level */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Access Level
+              </label>
+              <select
+                name="accessLevel"
+                className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all cursor-pointer"
+              >
+                <option value="free">Free</option>
+                <option value="premium">Premium 👑</option>
+              </select>
+            </div>
           </div>
 
-          {/* Emotional Tone */}
-          <div>
-            <label className="font-medium mb-2 block">
-              Emotional Tone
-            </label>
-
-            <select
-              name="emotionalTone"
-              className="w-full border rounded-xl p-3"
+          {/* Form Action Button */}
+          <div className="pt-4">
+            <Button
+              type="submit"
+              disabled={loading || uploading}
+              isLoading={loading}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm py-6 rounded-xl shadow-lg shadow-purple-500/10 transition-all tracking-wider"
             >
-              <option value="Motivational">
-                Motivational
-              </option>
-
-              <option value="Sad">
-                Sad
-              </option>
-
-              <option value="Realization">
-                Realization
-              </option>
-
-              <option value="Gratitude">
-                Gratitude
-              </option>
-            </select>
+              {loading ? "Publishing..." : "PUBLISH LESSON 🚀"}
+            </Button>
           </div>
 
-          {/* Visibility */}
-          <div>
-            <label className="font-medium mb-2 block">
-              Visibility
-            </label>
-
-            <select
-              name="visibility"
-              className="w-full border rounded-xl p-3"
-            >
-              <option value="public">
-                Public
-              </option>
-
-              <option value="private">
-                Private
-              </option>
-            </select>
-          </div>
-
-          {/* Access */}
-          <div>
-            <label className="font-medium mb-2 block">
-              Access Level
-            </label>
-
-            <select
-              name="accessLevel"
-              className="w-full border rounded-xl p-3"
-            >
-              <option value="free">
-                Free
-              </option>
-
-              <option value="premium">
-                Premium
-              </option>
-            </select>
-          </div>
-
-          {/* Button */}
-          <button
-            disabled={loading || uploading}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition"
-          >
-            {loading
-              ? "Publishing..."
-              : "Publish Lesson 🚀"}
-          </button>
         </form>
       </div>
     </div>
