@@ -76,7 +76,7 @@ export default function LessonsPage() {
   return (
     <div className="min-h-screen bg-slate-50/50 p-3 sm:p-5 font-sans text-slate-800 max-w-full mx-auto overflow-hidden">
       
-      {/* ১. টপ মেট্রিক্স কার্ডস - কম্প্যাক্ট উইডথ ও হাইট */}
+  
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 mb-6">
         <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/60 shadow-sm flex items-center gap-2.5 sm:gap-3">
           <div className="p-2 bg-blue-50 text-blue-600 rounded-lg sm:rounded-xl flex-shrink-0"><BookOpen size={16} /></div>
@@ -110,48 +110,9 @@ export default function LessonsPage() {
           </div>
         </div>
       </div>
-
-      {/* হেডার */}
-      <div className="mb-4">
-        <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">Manage Lessons</h1>
-        <p className="text-[11px] sm:text-xs text-slate-500">Control system data sets, configurations mapping and metadata setup.</p>
-      </div>
-
-      {/* ২. ফিল্টার এবং সার্চ বার সেকশন - টাইট গ্রিড */}
-      <div className="bg-white p-3 rounded-xl border border-slate-200/60 shadow-sm flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between mb-5">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
-          <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold cursor-pointer w-full">
-            <option>All Categories</option>
-            <option>Mindset</option>
-            <option>Life</option>
-            <option>Success</option>
-          </select>
-          <select value={visibility} onChange={(e) => { setVisibility(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold cursor-pointer w-full">
-            <option>All Visibility</option>
-            <option>Public</option>
-            <option>Private</option>
-          </select>
-          <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="border border-slate-200 rounded-lg p-1.5 px-2 text-[11px] bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-600 font-bold cursor-pointer w-full">
-            <option>All Status</option>
-            <option>Reviewed</option>
-            <option>Not Reviewed</option>
-          </select>
-        </div>
-
-        <div className="flex gap-2 items-center w-full md:w-auto">
-          <div className="relative flex-1 md:w-56 lg:w-64">
-            <Search className="absolute left-2.5 top-2.5 text-slate-400" size={13} />
-            <input type="text" placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="w-full pl-7 pr-3 py-1.5 border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
-          </div>
-          <button onClick={handleReset} className="border border-slate-200 text-slate-600 px-2.5 py-1.5 rounded-lg text-[11px] font-bold hover:bg-slate-50 transition flex items-center gap-1 active:scale-95 shrink-0">
-            <RotateCcw size={11} /> Reset
-          </button>
-        </div>
-      </div>
-
-      {/* ৩. আল্ট্রা-কম্প্যাক্ট টেবিল লেআউট */}
+      
       <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
-        {/* টেবিলের বাইরের কন্টেইনারে overflow-x-auto নিশ্চিত করা হয়েছে */}
+        
         <div className="w-full overflow-x-auto whitespace-nowrap block">
           <table className="w-full text-left border-collapse table-auto">
             <thead>
