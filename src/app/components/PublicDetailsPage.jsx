@@ -134,8 +134,8 @@ console.log("Is Premium:", session?.user?.plan === "premium");
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 mt-8">
+        
+        {/* <div className="flex gap-4 mt-8">
           <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition">
             👍 Like Lesson
           </button>
@@ -143,7 +143,7 @@ console.log("Is Premium:", session?.user?.plan === "premium");
           <button className="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition">
             💬 Add Comment
           </button>
-        </div>
+        </div> */}
       </div>
      
     </div>
