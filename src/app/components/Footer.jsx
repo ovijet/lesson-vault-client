@@ -39,7 +39,7 @@ export default function Footer() {
               <Mail size={16} className="text-slate-400" /> support@mywebsite.com
             </p>
             <p className="flex items-center gap-2.5 text-slate-600 hover:text-orange-500 transition-colors duration-200 cursor-pointer">
-              <Phone size={16} className="text-slate-400" /> +880 1XXXXXXXXX
+              <Phone size={16} className="text-slate-400" /> +880123456789
             </p>
           </div>
         </div>

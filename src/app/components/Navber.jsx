@@ -17,6 +17,7 @@ const Navbar = () => {
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
+  console.log(user,'uuuuuuuuuuuuuuuu');
   const role = user?.role || "user";
 
   // dynamic links generation (Avoids array mutation bugs)
@@ -182,7 +183,7 @@ const Navbar = () => {
                         </Link>
 
                         <Link
-                          href={role === "admin" ? "/dashboard/admin/home" : "/dashboard/user"}
+                          href={role === "admin" ? "/dashboard/admin" : "/dashboard/user"}
                           className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition"
                           onClick={() => setIsDropdownOpen(false)}
                         >
