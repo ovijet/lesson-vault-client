@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   FiEdit2,
   FiSave,
@@ -34,28 +34,35 @@ const UserProfile = () => {
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5000';
 
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState('');
-  const [photoURL, setPhotoURL] = useState('');
+  const [name, setName] = useState(user?.name || '');
+  const [photoURL, setPhotoURL] = useState(user?.image || '');
   const [userLessons, setUserLessons] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // Sync name/photo when user data becomes available
   useEffect(() => {
     if (!user) return;
-
     setName(user.name || '');
     setPhotoURL(user.image || '');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.name, user?.image]);
 
-    fetch(`${serverUrl}/my-lessons/${user.email}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to load lessons');
-        return res.json();
-      })
-      .then((data) => setUserLessons(data))
-      .catch((err) => {
-        console.error(err);
-        toast.error('Could not load your archive');
-      });
-  }, [user, serverUrl]);
+  const fetchUserLessons = useCallback(async () => {
+    if (!user?.email) return;
+    try {
+      const res = await fetch(`${serverUrl}/my-lessons/${user.email}`);
+      if (!res.ok) throw new Error('Failed to load lessons');
+      const data = await res.json();
+      setUserLessons(data);
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not load your archive');
+    }
+  }, [user?.email, serverUrl]);
+
+  useEffect(() => {
+    fetchUserLessons();
+  }, [fetchUserLessons]);
 
   const handleUpdateProfile = async () => {
     if (!name.trim()) {

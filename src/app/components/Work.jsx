@@ -1,11 +1,10 @@
 import React from 'react';
 
-
 const steps = [
   {
     id: "01",
-    title: "Create Account",
-    description: "Sign up easily with your email or social accounts to get started on your learning journey.",
+    title: "Create Free Account",
+    description: "Sign up in seconds using your Google or email credentials to unlock the full library of life lessons.",
     icon: (
       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -14,8 +13,8 @@ const steps = [
   },
   {
     id: "02",
-    title: "Explore Courses",
-    description: "Browse through hundreds of high-quality courses tailored just for your career growth.",
+    title: "Explore Categorized Lessons",
+    description: "Browse high-value insights across Career, Relationships, Personal Growth, Finance, and Leadership.",
     icon: (
       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -24,41 +23,41 @@ const steps = [
   },
   {
     id: "03",
-    title: "Learn & Practice",
-    description: "Watch interactive video lessons and practice in our built-in interactive coding environment.",
+    title: "Read & Bookmark",
+    description: "Save high-impact advice into your personal favorites vault to revisit whenever you need clarity.",
     icon: (
       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
       </svg>
     ),
   },
   {
     id: "04",
-    title: "Join Community",
-    description: "Connect with thousands of fellow learners, share insights, and solve problems together.",
+    title: "Publish Your Experience",
+    description: "Turn your personal challenges and career achievements into written lessons for the global community.",
     icon: (
       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
       </svg>
     ),
   },
   {
     id: "05",
-    title: "Earn Certificates",
-    description: "Complete course milestones, pass quizzes, and get verifiable industry certificates.",
+    title: "Engage & Upvote",
+    description: "Comment on lessons, share feedback, and upvote the top contributors making a difference.",
     icon: (
       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2" />
       </svg>
     ),
   },
   {
     id: "06",
-    title: "Land Your Job",
-    description: "Get exclusive access to our job board and top tech companies looking for your skills.",
+    title: "Unlock Premium Perks",
+    description: "Access exclusive author notes, priority publishing, and verified contributor status.",
     icon: (
       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
       </svg>
     ),
   },
@@ -66,48 +65,49 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-6xl mx-auto text-center">
+    <section className="bg-gradient-to-b from-slate-50/50 via-white to-white py-24 px-4 sm:px-6 lg:px-8 font-sans border-t border-slate-100">
+      <div className="max-w-7xl mx-auto text-center">
         
-       
-        <span className="inline-block bg-[#E8F5E9] text-[#2E7D32] text-xs font-semibold px-4 py-1.5 rounded-full border border-[#C8E6C9] mb-4">
-          Simple Process
+        <span className="inline-flex items-center gap-2 bg-emerald-100/80 text-emerald-800 text-xs font-extrabold uppercase tracking-wider px-4 py-1.5 rounded-full border border-emerald-200 mb-4">
+          ✨ Streamlined Process
         </span>
 
-
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A237E] mb-3 tracking-tight">
-          How Our <span className="text-[#2E7D32]">Platform</span> Works
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
+          How <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Lesson Vault</span> Works
         </h2>
 
-        
-        <p className="text-gray-500 max-w-2xl mx-auto text-sm sm:text-base mb-12 leading-relaxed">
-          From creating your profile to landing your dream tech career — here is a step-by-step breakdown of how you will succeed with us.
+        <p className="text-slate-600 max-w-2xl mx-auto text-base sm:text-lg mb-16 leading-relaxed">
+          From reading your first real-world story to publishing your own life wisdom—here is how you grow with our community step-by-step.
         </p>
 
-       
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+        {/* Steps Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
           {steps.map((step) => (
             <div 
               key={step.id} 
-              className="relative bg-white border border-gray-100 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_30px_rgba(46,125,50,0.05)] transition-all duration-300 group"
+              className="relative bg-white border border-slate-200/80 p-8 rounded-3xl shadow-xs hover:shadow-xl hover:border-emerald-300 transition-all duration-300 group flex flex-col justify-between"
             >
-              
-              <div className="flex justify-between items-center mb-5">
-                <div className="bg-[#2E7D32] p-3 rounded-xl shadow-md shadow-green-100 group-hover:scale-110 transition-transform duration-300">
-                  {step.icon}
+              <div>
+                <div className="flex justify-between items-center mb-6">
+                  <div className="bg-gradient-to-tr from-emerald-600 to-teal-600 p-3.5 rounded-2xl shadow-md shadow-emerald-600/20 group-hover:scale-110 transition-transform duration-300">
+                    {step.icon}
+                  </div>
+                  <span className="text-4xl font-black text-slate-200 group-hover:text-emerald-500/20 transition-colors duration-300 select-none">
+                    {step.id}
+                  </span>
                 </div>
-                <span className="text-4xl font-black text-gray-100 group-hover:text-green-50 transition-colors duration-300 select-none">
-                  {step.id}
-                </span>
+
+                <h3 className="text-xl font-bold text-slate-900 mb-2.5 group-hover:text-emerald-700 transition-colors duration-200">
+                  {step.title}
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  {step.description}
+                </p>
               </div>
 
-              
-              <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-[#2E7D32] transition-colors duration-200">
-                {step.title}
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                {step.description}
-              </p>
+              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center text-xs font-bold text-emerald-600 gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Step {step.id} overview</span> →
+              </div>
             </div>
           ))}
         </div>

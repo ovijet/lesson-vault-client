@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FiAward, FiBookOpen } from "react-icons/fi";
+import { FiAward, FiBookOpen, FiStar } from "react-icons/fi";
+import { FaCrown } from "react-icons/fa6";
 
 const TopContributors = () => {
   const [contributors, setContributors] = useState([]);
@@ -31,8 +32,8 @@ const TopContributors = () => {
   if (loading) {
     return (
       <section className="py-20 text-center flex flex-col justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
-        <h2 className="text-xl font-semibold text-gray-600">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mb-4"></div>
+        <h2 className="text-base font-bold text-slate-600">
           Loading top contributors...
         </h2>
       </section>
@@ -40,24 +41,28 @@ const TopContributors = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-24 bg-white font-sans border-t border-slate-100 relative">
       <div className="max-w-6xl mx-auto px-5">
-        <div className="text-center mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <span className="inline-flex items-center gap-2 bg-amber-100 text-amber-900 text-xs font-extrabold uppercase tracking-wider px-4 py-1.5 rounded-full border border-amber-200 mb-4">
+            <FaCrown className="text-amber-600 text-xs" /> Leaderboard Hall of Fame
+          </span>
           <motion.h2
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl font-bold text-gray-800"
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight"
           >
-            🏆 Top 3 Contributors
+            Top Community <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Contributors</span>
           </motion.h2>
-          <p className="text-gray-500 mt-2">
-            The most active minds helping our community learn
+          <p className="text-slate-600 mt-3 text-base sm:text-lg">
+            Recognizing the most active minds sharing impactful life wisdom with our global community.
           </p>
         </div>
 
         {contributors.length === 0 ? (
-          <div className="text-center text-gray-500 bg-white p-10 rounded-2xl border shadow-sm max-w-md mx-auto">
-            No contributors found yet!
+          <div className="text-center text-slate-500 bg-slate-50 p-10 rounded-3xl border border-slate-200 max-w-md mx-auto">
+            No contributors found yet! Be the first to share a lesson.
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -66,29 +71,33 @@ const TopContributors = () => {
                 key={person._id || index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -8 }}
-                className="bg-white rounded-3xl shadow-xl p-6 border border-green-100 flex flex-col justify-between transition-all relative overflow-hidden"
+                className="bg-white rounded-[2rem] shadow-sm hover:shadow-2xl p-7 border border-slate-200/80 hover:border-emerald-300 flex flex-col justify-between transition-all relative overflow-hidden group"
               >
-                <div className="absolute top-4 right-4">
+                {/* Rank Pill */}
+                <div className="absolute top-5 right-5 z-10">
                   <span
-                    className={`text-xs font-bold px-3 py-1 rounded-full text-white shadow-sm ${
+                    className={`inline-flex items-center gap-1 text-xs font-extrabold px-3 py-1 rounded-full text-white shadow-xs ${
                       index === 0
-                        ? "bg-amber-500"
+                        ? "bg-gradient-to-r from-amber-500 to-amber-600 shadow-amber-500/20"
                         : index === 1
-                          ? "bg-slate-400"
-                          : "bg-amber-700"
+                          ? "bg-gradient-to-r from-slate-400 to-slate-500"
+                          : "bg-gradient-to-r from-amber-700 to-amber-800"
                     }`}
                   >
+                    {index === 0 && <FaCrown className="text-xs text-amber-200" />}
                     Rank #{index + 1}
                   </span>
                 </div>
 
                 <div>
-                  {/* User Profile Image */}
-                  <div className="flex flex-col items-center mt-4">
-                    {/* ✅ ইমেজ লকিং ও ব্রোকেন লিংক এড়াতে ১০০% সেফ <img> ট্যাগ */}
-                    <div className="w-24 h-24 overflow-hidden rounded-full border-4 border-green-500 flex items-center justify-center bg-gray-100 shadow-md">
+                  {/* Avatar */}
+                  <div className="flex flex-col items-center mt-2">
+                    <div className={`w-24 h-24 overflow-hidden rounded-full border-4 flex items-center justify-center bg-slate-100 shadow-md transition-transform group-hover:scale-105 ${
+                      index === 0 ? "border-amber-400 ring-4 ring-amber-100" : "border-emerald-500 ring-4 ring-emerald-50"
+                    }`}>
                       <img
                         src={
                           person?.image && person.image.startsWith("http") && !person.image.includes("…")
@@ -103,44 +112,44 @@ const TopContributors = () => {
                       />
                     </div>
 
-                    <h3 className="text-xl font-bold mt-4 text-center text-gray-800 line-clamp-1">
-                      {person?.name || "Anonymous User"}
+                    <h3 className="text-xl font-extrabold mt-4 text-center text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                      {person?.name || "Anonymous Learner"}
                     </h3>
-                    <p className="text-gray-400 text-xs mt-0.5 line-clamp-1">
+                    <p className="text-slate-500 text-xs mt-0.5 line-clamp-1 font-medium">
                       {person.email}
                     </p>
                   </div>
 
                   {/* Stats Counter */}
                   <div className="grid grid-cols-2 gap-3 mt-6">
-                    <div className="bg-green-50 rounded-2xl p-3 text-center border border-green-100">
-                      <FiBookOpen className="mx-auto text-xl text-green-700 mb-0.5" />
-                      <h4 className="text-xl font-bold text-gray-800">
+                    <div className="bg-emerald-50/70 rounded-2xl p-3 text-center border border-emerald-100">
+                      <FiBookOpen className="mx-auto text-xl text-emerald-700 mb-0.5" />
+                      <h4 className="text-xl font-extrabold text-slate-900">
                         {person.totalLessons || 0}
                       </h4>
-                      <p className="text-[11px] text-gray-500">Lessons</p>
+                      <p className="text-[11px] font-semibold text-slate-500">Lessons</p>
                     </div>
 
-                    <div className="bg-yellow-50 rounded-2xl p-3 text-center border border-yellow-100">
-                      <FiAward className="mx-auto text-xl text-yellow-600 mb-0.5" />
-                      <h4 className="text-sm font-bold text-gray-800 mt-1">
+                    <div className="bg-amber-50/70 rounded-2xl p-3 text-center border border-amber-100">
+                      <FiAward className="mx-auto text-xl text-amber-600 mb-0.5" />
+                      <h4 className="text-sm font-extrabold text-slate-900 mt-1">
                         {index === 0
                           ? "Gold"
                           : index === 1
                             ? "Silver"
                             : "Bronze"}
                       </h4>
-                      <p className="text-[11px] text-gray-500">Medal</p>
+                      <p className="text-[11px] font-semibold text-slate-500">Badge</p>
                     </div>
                   </div>
 
-                  {/* Recent Lesson Topic */}
+                  {/* Top Contribution Topic */}
                   {person.topLessonTitle && (
-                    <div className="mt-5 border-t pt-4">
-                      <p className="text-[9px] uppercase font-bold tracking-wider text-gray-400">
+                    <div className="mt-5 border-t border-slate-100 pt-4">
+                      <p className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400">
                         Top Contribution
                       </p>
-                      <h4 className="text-xs font-semibold mt-1 text-gray-600 line-clamp-1">
+                      <h4 className="text-xs font-semibold mt-1 text-slate-700 line-clamp-1">
                         {person.topLessonTitle}
                       </h4>
                     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { FiHeart, FiTrash2, FiArrowRight, FiCalendar, FiLoader } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
@@ -19,7 +19,7 @@ const SavedCollection = () => {
   const [selectedTone, setSelectedTone] = useState('All Tones');
 
   // ডাটাবেজ থেকে ফেভারিট ডাটা তুলে আনা 
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     if (!user?.email) return;
     try {
       const res = await fetch(`${serverUrl}/my-favorites/${user.email}`);
@@ -31,13 +31,13 @@ const SavedCollection = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.email, serverUrl]);
 
   useEffect(() => {
     if (user) {
       fetchFavorites();
     }
-  }, [user]);
+  }, [user, fetchFavorites]);
 
   
   const handleRemoveFavorite = async (favoriteId) => {
