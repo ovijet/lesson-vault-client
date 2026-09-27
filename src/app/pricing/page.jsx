@@ -2,6 +2,9 @@
 
 import { Button } from "@heroui/react";
 import { useState } from "react";
+import { FiCheck, FiStar, FiZap, FiShield, FiUsers, FiCrown } from "react-icons/fi";
+import { FaCrown } from "react-icons/fa6";
+import Link from "next/link";
 
 export default function PricingPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,103 +14,117 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="bg-gray-50 text-gray-700 min-h-screen py-20 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="bg-slate-50/60 text-slate-800 min-h-screen py-16 sm:py-24 px-4 sm:px-6 lg:px-8 font-sans">
       {/* Header Section */}
-      <div className="text-center mb-16 max-w-2xl mx-auto">
-        <span className="text-xs font-bold tracking-widest text-purple-600 uppercase block mb-3">
-          CHOOSE YOUR PATH
+      <div className="text-center mb-16 max-w-3xl mx-auto">
+        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 text-emerald-800 text-xs font-extrabold uppercase tracking-wider mb-4 border border-emerald-200 shadow-xs">
+          <FiZap className="text-emerald-600 text-sm" /> Simple & Transparent Pricing
         </span>
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
-          Accelerate your skills, <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 italic">
-            made effortless.
+
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight">
+          Invest in Your <br className="hidden sm:inline" />
+          <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent">
+            Lifelong Growth
           </span>
         </h1>
-        <p className="mt-4 text-sm text-gray-500 leading-relaxed">
-          Secure your personal knowledge base and unlock exclusive insights from top learners. 
-          Pick the perfect plan for your growth.
+
+        <p className="mt-4 text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+          Unlock unlimited real-world life lessons, verified expert wisdom, priority publishing, and exclusive community perks.
         </p>
       </div>
 
-      {/* 3 Cards Grid */}
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 items-start">
+      {/* 3 Tier Cards Grid */}
+      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 items-stretch">
         
         {/* 1. Starter Pack (Free) */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 relative flex flex-col justify-between h-[540px] shadow-sm transition-all hover:shadow-md hover:border-gray-300">
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-8 flex flex-col justify-between shadow-xs hover:shadow-xl transition-all duration-300 relative">
           <div>
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Starter Pack</h3>
-              <span className="text-[10px] uppercase font-bold tracking-wider bg-gray-100 text-gray-500 px-2 py-1 rounded">
-                CURRENT
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Starter Pack</h3>
+                <p className="text-slate-500 text-xs mt-1">For casual learners</p>
+              </div>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-slate-200">
+                Active
               </span>
             </div>
             
-            <div className="flex items-baseline text-gray-900 mb-6">
-              <span className="text-4xl font-extrabold">৳০</span>
-              <span className="text-gray-400 text-sm ml-2">/ always free</span>
+            <div className="flex items-baseline text-slate-900 mb-6">
+              <span className="text-4xl sm:text-5xl font-black">৳০</span>
+              <span className="text-slate-400 text-xs sm:text-sm font-semibold ml-2">/ forever free</span>
             </div>
             
-            <p className="text-xs text-gray-500 mb-8 leading-relaxed">
-              Begin tracking your learning milestones and explore public study materials.
+            <p className="text-slate-600 text-sm mb-8 leading-relaxed">
+              Begin tracking your learning milestones and explore public community lessons.
             </p>
 
-            <ul className="space-y-4 text-xs text-gray-600">
+            <ul className="space-y-3.5 text-xs sm:text-sm text-slate-700 mb-8 border-t border-slate-100 pt-6">
               <li className="flex items-center gap-3">
-                <span className="text-gray-400 font-bold text-sm">✓</span> Build up to 5 custom lessons
+                <FiCheck className="text-emerald-500 font-bold text-base flex-shrink-0" />
+                <span>Build up to 5 custom lessons</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-gray-400 font-bold text-sm">✓</span> Browse community shared content
+                <FiCheck className="text-emerald-500 font-bold text-base flex-shrink-0" />
+                <span>Browse public shared content</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-gray-400 font-bold text-sm">✓</span> Basic stats dashboard
+                <FiCheck className="text-emerald-500 font-bold text-base flex-shrink-0" />
+                <span>Basic personal dashboard</span>
               </li>
             </ul>
           </div>
 
           <Button
             disabled
-            className="w-full bg-transparent border border-gray-200 text-gray-400 font-bold text-xs py-5 rounded-xl cursor-not-allowed uppercase tracking-wider"
+            className="w-full bg-slate-100 border border-slate-200 text-slate-400 font-bold text-xs py-4 rounded-2xl cursor-not-allowed uppercase tracking-wider"
           >
-            CURRENTLY ACTIVE
+            FREE PLAN ACTIVE
           </Button>
         </div>
 
-        {/* 2. Pro Member (Highlighted - One Time) */}
-        <div className="bg-white border-2 border-purple-500 rounded-2xl p-6 relative flex flex-col justify-between h-[540px] shadow-xl shadow-purple-100/50 transition-all hover:shadow-2xl hover:shadow-purple-100">
-          {/* Recommended Badge */}
-          <span className="absolute -top-3 right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-md shadow-md">
-            RECOMMENDED
+        {/* 2. Pro Member (Highlighted Recommended) */}
+        <div className="bg-gradient-to-b from-slate-900 via-emerald-950 to-slate-950 text-white border-2 border-emerald-500/80 rounded-3xl p-8 flex flex-col justify-between shadow-2xl shadow-emerald-900/30 relative scale-105 z-10">
+          
+          {/* Recommended Pill */}
+          <span className="absolute -top-3.5 right-8 bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
+            MOST POPULAR ✨
           </span>
 
           <div>
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                Pro Member <span className="text-purple-500 text-sm">⭐</span>
-              </h3>
-              <span className="text-xl">👑</span>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-2xl font-black text-white flex items-center gap-2">
+                  Pro Member <FaCrown className="text-amber-400 text-lg" />
+                </h3>
+                <p className="text-emerald-300/80 text-xs mt-1">For dedicated growth seekers</p>
+              </div>
             </div>
             
-            <div className="flex items-baseline text-gray-900 mb-6">
-              <span className="text-4xl font-extrabold">৳১৫০০</span>
-              <span className="text-gray-400 text-sm ml-2">/ One-time</span>
+            <div className="flex items-baseline text-white mb-6">
+              <span className="text-4xl sm:text-5xl font-black">৳১৫০০</span>
+              <span className="text-emerald-300/70 text-xs sm:text-sm font-semibold ml-2">/ one-time lifetime</span>
             </div>
             
-            <p className="text-xs text-gray-500 mb-8 leading-relaxed">
-              Gain full capability with unconstrained resources, zero interruptions, and elite tools.
+            <p className="text-slate-300 text-sm mb-8 leading-relaxed">
+              Gain full capability with unlimited private lessons, zero restrictions, and elite contributor status.
             </p>
 
-            <ul className="space-y-4 text-xs text-gray-700">
+            <ul className="space-y-3.5 text-xs sm:text-sm text-slate-200 mb-8 border-t border-white/10 pt-6">
               <li className="flex items-center gap-3">
-                <span className="text-purple-600 font-bold text-sm">✓</span> Endless lesson creation
+                <FiCheck className="text-emerald-400 font-bold text-base flex-shrink-0" />
+                <span><strong>Unlimited</strong> lesson creation</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-purple-600 font-bold text-sm">✓</span> Publish private & locked items
+                <FiCheck className="text-emerald-400 font-bold text-base flex-shrink-0" />
+                <span>Access all <strong>PRO & Exclusive</strong> materials</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-purple-600 font-bold text-sm">✓</span> Unrestricted access to pro materials
+                <FiCheck className="text-emerald-400 font-bold text-base flex-shrink-0" />
+                <span>Distinguished <strong>Verified Pro Badge</strong></span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-purple-600 font-bold text-sm">✓</span> Elite Verified Badge
+                <FiCheck className="text-emerald-400 font-bold text-base flex-shrink-0" />
+                <span>Priority moderation & support</span>
               </li>
             </ul>
           </div>
@@ -116,57 +133,64 @@ export default function PricingPage() {
             <Button
               type="submit"
               isLoading={isLoading}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs py-5 rounded-xl uppercase tracking-wider transition-all duration-200 shadow-md shadow-purple-500/20"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs sm:text-sm py-4 rounded-2xl uppercase tracking-wider transition-all duration-300 shadow-lg shadow-emerald-500/25 hover:scale-105 cursor-pointer"
             >
-              {isLoading ? "Processing..." : "UNLOCK PRO ACCESS"}
+              {isLoading ? "Redirecting to Stripe..." : "UNLOCK PRO LIFETIME ACCESS"}
             </Button>
           </form>
         </div>
 
-        {/* 3. Team Plan (Monthly/Annual Alternative) */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 relative flex flex-col justify-between h-[540px] shadow-sm transition-all hover:shadow-md hover:border-gray-300">
+        {/* 3. Team Hub Plan */}
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-8 flex flex-col justify-between shadow-xs hover:shadow-xl transition-all duration-300 relative">
           <div>
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Team Hub</h3>
-              <span className="text-[10px] uppercase font-bold tracking-wider bg-blue-50 text-blue-600 px-2 py-1 rounded">
-                ORGANIZATION
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Team Hub</h3>
+                <p className="text-slate-500 text-xs mt-1">For organizations & study groups</p>
+              </div>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider bg-teal-50 text-teal-700 px-3 py-1 rounded-full border border-teal-200">
+                Group
               </span>
             </div>
             
-            <div className="flex items-baseline text-gray-900 mb-6">
-              <span className="text-4xl font-extrabold">৳৪৫০০</span>
-              <span className="text-gray-400 text-sm ml-2">/ annual</span>
+            <div className="flex items-baseline text-slate-900 mb-6">
+              <span className="text-4xl sm:text-5xl font-black">৳৪৫০০</span>
+              <span className="text-slate-400 text-xs sm:text-sm font-semibold ml-2">/ annual</span>
             </div>
             
-            <p className="text-xs text-gray-500 mb-8 leading-relaxed">
-              Perfect for small groups, study circles, or institutions wanting shared environments.
+            <p className="text-slate-600 text-sm mb-8 leading-relaxed">
+              Perfect for small teams, study circles, or companies wanting shared lesson repositories.
             </p>
 
-            <ul className="space-y-4 text-xs text-gray-600">
+            <ul className="space-y-3.5 text-xs sm:text-sm text-slate-700 mb-8 border-t border-slate-100 pt-6">
               <li className="flex items-center gap-3">
-                <span className="text-blue-500 font-bold text-sm">✓</span> Everything in Pro Member pack
+                <FiCheck className="text-teal-600 font-bold text-base flex-shrink-0" />
+                <span>Everything in Pro Member pack</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-blue-500 font-bold text-sm">✓</span> Up to 5 team member seats
+                <FiCheck className="text-teal-600 font-bold text-base flex-shrink-0" />
+                <span>Up to <strong>5 team member seats</strong></span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-blue-500 font-bold text-sm">✓</span> Collaborative shared dashboard
+                <FiCheck className="text-teal-600 font-bold text-base flex-shrink-0" />
+                <span>Shared team vault & workspace</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-blue-500 font-bold text-sm">✓</span> Centralized billing & analytics
+                <FiCheck className="text-teal-600 font-bold text-base flex-shrink-0" />
+                <span>Centralized admin controls</span>
               </li>
             </ul>
           </div>
 
-          <Button
-            size="sm"
-            className="w-full bg-gray-600 hover:bg-gray-800 text-white font-bold text-xs py-5 rounded-xl uppercase tracking-wider transition-all"
+          <a
+            href="mailto:support@lessonvault.com?subject=Team%20Hub%20Plan"
+            className="w-full text-center bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-4 rounded-2xl uppercase tracking-wider transition-all shadow-md block"
           >
-            CONTACT SALES
-          </Button>
+            CONTACT SALES TEAM
+          </a>
         </div>
 
       </div>
     </div>
   );
-}
+}

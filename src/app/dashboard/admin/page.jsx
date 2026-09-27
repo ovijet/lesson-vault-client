@@ -1,11 +1,14 @@
+"use client";
+
 import React from 'react';
+import AdminHomePage from './home/page';
 
 const AdminDashboard = () => {
-    return (
-        <div>
-            admin 
-        </div>
-    );
+  return (
+    <div>
+      <AdminHomePage />
+    </div>
+  );
 };
 
-export default AdminDashboard;
+export default AdminDashboard;

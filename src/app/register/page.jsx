@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { BiUser, BiImage, BiEnvelope, BiLock, BiChevronDown, BiRefresh } from "react-icons/bi";
+import { FaGraduationCap } from "react-icons/fa";
 import {
   Button,
   Card,
@@ -25,7 +26,6 @@ const RegisterPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ Email signup
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -35,7 +35,7 @@ const RegisterPage = () => {
 
     const { data, error } = await authClient.signUp.email({
       ...userData,
-      plan: 'free', // default plan
+      plan: 'free',
     });
 
     setIsLoading(false);
@@ -51,7 +51,6 @@ const RegisterPage = () => {
     }
   };
 
-  // ✅ Google signup
   const GoogleSignUp = async () => {
     const { data, error } = await authClient.signIn.social({
       provider: "google",
@@ -68,7 +67,6 @@ const RegisterPage = () => {
     }
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { 
@@ -84,27 +82,37 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-gray-100 to-orange-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-orange-950/10 p-4 sm:p-6 select-none">
-      
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50/60 via-slate-50 to-teal-50/40 p-4 sm:p-6 select-none font-sans relative overflow-hidden">
+      {/* Glow shapes */}
+      <div className="absolute top-10 left-10 w-80 h-80 bg-emerald-200/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-80 h-80 bg-teal-200/30 rounded-full blur-3xl pointer-events-none" />
+
       <motion.div 
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
-        <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800/60 shadow-2xl rounded-3xl overflow-hidden p-1">
+        <Card className="bg-white/85 backdrop-blur-2xl border border-slate-200/80 shadow-2xl rounded-3xl overflow-hidden p-1">
           
           {/* Header Section */}
           <div className="text-center pt-8 pb-3 px-6">
+            <motion.div
+              whileHover={{ rotate: -6, scale: 1.08 }}
+              className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-emerald-600/30 text-2xl"
+            >
+              <FaGraduationCap />
+            </motion.div>
+
             <motion.h1 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"
+              className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900"
             >
-              Create Lesson Vault Account
+              Join <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">LessonVault</span>
             </motion.h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
-              Join and start tracking your path today
+            <p className="text-xs sm:text-sm text-slate-500 mt-1.5 font-medium">
+              Create your account and start capturing life wisdom today
             </p>
           </div>
 
@@ -114,12 +122,12 @@ const RegisterPage = () => {
             {/* Full Name */}
             <motion.div variants={itemVariants} className="w-full">
               <TextField isRequired name="name" className="w-full">
-                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Full Name</Label>
+                <Label className="text-xs font-semibold text-slate-700 mb-1">Full Name</Label>
                 <div className="relative flex items-center">
                   <BiUser className="absolute left-3.5 text-slate-400 text-lg z-10" />
                   <Input 
                     placeholder="Enter your name" 
-                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-orange-500 bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200" 
+                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
                   />
                 </div>
                 <FieldError className="text-xs text-rose-500 mt-1" />
@@ -129,12 +137,12 @@ const RegisterPage = () => {
             {/* Profile Image */}
             <motion.div variants={itemVariants} className="w-full">
               <TextField isRequired name="image" className="w-full">
-                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Profile Image URL</Label>
+                <Label className="text-xs font-semibold text-slate-700 mb-1">Profile Image URL</Label>
                 <div className="relative flex items-center">
                   <BiImage className="absolute left-3.5 text-slate-400 text-lg z-10" />
                   <Input 
                     placeholder="https://example.com/image.jpg" 
-                    className="pl-10 w-full rounded-xl border-slate-200 bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200" 
+                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
                   />
                 </div>
                 <FieldError className="text-xs text-rose-500 mt-1" />
@@ -144,12 +152,12 @@ const RegisterPage = () => {
             {/* Email */}
             <motion.div variants={itemVariants} className="w-full">
               <TextField isRequired name="email" type="email" className="w-full">
-                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Email Address</Label>
+                <Label className="text-xs font-semibold text-slate-700 mb-1">Email Address</Label>
                 <div className="relative flex items-center">
                   <BiEnvelope className="absolute left-3.5 text-slate-400 text-lg z-10" />
                   <Input 
                     placeholder="john@example.com" 
-                    className="pl-10 w-full rounded-xl border-slate-200 bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200" 
+                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
                   />
                 </div>
                 <FieldError className="text-xs text-rose-500 mt-1" />
@@ -159,37 +167,19 @@ const RegisterPage = () => {
             {/* Password */}
             <motion.div variants={itemVariants} className="w-full">
               <TextField isRequired minLength={8} name="password" type="password" className="w-full">
-                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Password</Label>
+                <Label className="text-xs font-semibold text-slate-700 mb-1">Password</Label>
                 <div className="relative flex items-center">
                   <BiLock className="absolute left-3.5 text-slate-400 text-lg z-10" />
                   <Input 
                     placeholder="Create secure password" 
-                    className="pl-10 w-full rounded-xl border-slate-200 bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200" 
+                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
                   />
                 </div>
-                <Description className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
+                <Description className="text-[11px] text-slate-400 mt-1">
                   8+ characters with uppercase & number
                 </Description>
                 <FieldError className="text-xs text-rose-500 mt-1" />
               </TextField>
-            </motion.div>
-
-            {/* Role Select (State update to exact layout alignment) */}
-            <motion.div variants={itemVariants} className="w-full">
-              <Select className="w-full" placeholder="Select your system account group" name="state" isRequired>
-                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Account Role Mapping</Label>
-                <Select.Trigger className="w-full rounded-xl border-slate-200 bg-slate-50/50 dark:bg-slate-800/50 h-11 px-3.5 flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
-                  <Select.Value />
-                  <BiChevronDown className="text-slate-400 text-lg transition-transform" />
-                </Select.Trigger>
-                <Select.Popover className="border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-900 shadow-xl z-50">
-                  <ListBox className="p-1">
-                    <ListBox.Item id="user" textValue="user" className="px-3 py-2 text-sm rounded-lg hover:bg-orange-50 dark:hover:bg-orange-950/30 text-slate-700 dark:text-slate-200 cursor-pointer">
-                      user
-                    </ListBox.Item>
-                  </ListBox>
-                </Select.Popover>
-              </Select>
             </motion.div>
 
             {/* Action Buttons */}
@@ -197,7 +187,7 @@ const RegisterPage = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold transition shadow-md shadow-orange-500/10 hover:opacity-95 text-sm"
+                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl font-bold transition shadow-lg shadow-emerald-600/20 text-sm cursor-pointer"
               >
                 {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
@@ -205,7 +195,7 @@ const RegisterPage = () => {
               <Button
                 type="reset"
                 variant="bordered"
-                className="w-full h-11 rounded-xl border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 text-xs font-medium flex items-center justify-center gap-1.5"
+                className="w-full h-10 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <BiRefresh className="text-base" /> Clear Entries
               </Button>
@@ -214,9 +204,9 @@ const RegisterPage = () => {
 
           {/* Divider */}
           <div className="flex items-center gap-3 px-7 my-2">
-            <div className="h-px bg-slate-200/70 dark:bg-slate-800/70 flex-1" />
-            <span className="text-[11px] text-slate-400 uppercase tracking-widest font-semibold">or</span>
-            <div className="h-px bg-slate-200/70 dark:bg-slate-800/70 flex-1" />
+            <div className="h-px bg-slate-200 flex-1" />
+            <span className="text-[11px] text-slate-400 uppercase tracking-widest font-extrabold">OR</span>
+            <div className="h-px bg-slate-200 flex-1" />
           </div>
 
           {/* Google Auth Integration */}
@@ -224,18 +214,18 @@ const RegisterPage = () => {
             <Button
               onClick={GoogleSignUp}
               variant="bordered"
-              className="w-full h-12 flex items-center justify-center gap-2.5 rounded-xl border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300 text-sm font-medium transition"
+              className="w-full h-12 flex items-center justify-center gap-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold transition cursor-pointer"
             >
-              <FcGoogle size={19} />
+              <FcGoogle size={20} />
               Continue with Google
             </Button>
           </div>
 
           {/* Login Redirection Footer */}
-          <div className="pb-6 text-center text-xs text-slate-400 dark:text-slate-500 font-medium">
+          <div className="pb-6 text-center text-xs text-slate-500 font-medium">
             Already have an account?{" "}
-            <Link href="/login" className="text-orange-500 hover:text-orange-600 font-bold ml-0.5 transition">
-              Login
+            <Link href="/login" className="text-emerald-600 hover:text-emerald-700 font-bold ml-0.5 transition underline underline-offset-4">
+              Sign In
             </Link>
           </div>
 
@@ -245,4 +235,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default RegisterPage;

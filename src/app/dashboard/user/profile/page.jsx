@@ -7,25 +7,14 @@ import {
   FiX,
   FiMail,
   FiLoader,
+  FiBookOpen,
+  FiAward,
+  FiUser
 } from 'react-icons/fi';
+import { FaCrown, FaGraduationCap } from 'react-icons/fa6';
 import { authClient } from '@/lib/auth-client';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-
-
-const CrownIcon = ({ className = "w-5 h-5", fill = "currentColor" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill={fill} xmlns="http://www.w3.org/2000/svg">
-    <path d="M2 4L5 12L12 6L19 12L22 4L17 18H7L2 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-
-const LeafIcon = ({ className = "w-5 h-5" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2 22C2 22 8 22 12 18C16 14 19 8 22 2C22 2 16 5 12 9C8 13 2 19 2 22Z" />
-    <path d="M12 9L2 2" />
-  </svg>
-);
 
 const UserProfile = () => {
   const { data: session, isPending } = authClient.useSession();
@@ -39,24 +28,22 @@ const UserProfile = () => {
   const [userLessons, setUserLessons] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Sync name/photo when user data becomes available
   useEffect(() => {
     if (!user) return;
     setName(user.name || '');
     setPhotoURL(user.image || '');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.name, user?.image]);
 
   const fetchUserLessons = useCallback(async () => {
     if (!user?.email) return;
     try {
       const res = await fetch(`${serverUrl}/my-lessons/${user.email}`);
-      if (!res.ok) throw new Error('Failed to load lessons');
-      const data = await res.json();
-      setUserLessons(data);
+      if (res.ok) {
+        const data = await res.json();
+        setUserLessons(Array.isArray(data) ? data : []);
+      }
     } catch (err) {
       console.error(err);
-      toast.error('Could not load your archive');
     }
   }, [user?.email, serverUrl]);
 
@@ -86,7 +73,7 @@ const UserProfile = () => {
       }
     } catch (err) {
       console.error(err);
-      toast.error('Archive sync failed');
+      toast.error('Profile update failed');
     } finally {
       setIsUpdating(false);
     }
@@ -94,219 +81,226 @@ const UserProfile = () => {
 
   if (isPending) {
     return (
-      <div className="min-h-screen bg-[#2A4D38] flex items-center justify-center">
-        <FiLoader className="text-white animate-spin" size={40} />
+      <div className="min-h-[400px] flex items-center justify-center">
+        <FiLoader className="text-emerald-600 animate-spin" size={36} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen text-[#1E3326] p-4 md:p-12 font-sans selection:bg-[#2A4D38] selection:text-white">
+    <div className="font-sans text-slate-800 space-y-8">
       <Toaster position="top-center" />
-      
-      <div className="max-w-6xl mx-auto">
+
+      {/* Main Profile Header Card */}
+      <section className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-xs relative overflow-hidden">
         
-        {/* --- PROFILE HEADER CARD ({66806E26-8106-4445-B90A-F2B4322CB305}_2.jpg এর মতো বড় রাউন্ডেড হোয়াইট বক্স) --- */}
-        <section className="bg-white rounded-[35px] p-8 md:p-12 mb-12 shadow-xl relative">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
           
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
-            
-            {/* ছবির মতো বড় ডাবল বর্ডার ক্রাউন ব্যাজসহ অ্যাভাটার */}
-            <div className="relative">
-              <div className="w-36 h-36 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white ring-4 ring-[#ECEBE9] flex items-center justify-center bg-[#F7F6F4] shadow-md">
-                {photoURL ? (
-                  <img
-                    src={photoURL}
-                    alt={name || user?.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      setPhotoURL('');
-                    }}
-                  />
-                ) : (
-                  <span className="text-4xl font-serif text-[#2A4D38] font-bold">
-                    {(name || user?.name || 'A').slice(0, 1).toUpperCase()}
-                  </span>
-                )}
-              </div>
-              {/* গ্রিন সার্কেল ক্রাউন ব্যাজ (ছবির মতো হুবহু প্লেসমেন্ট) */}
-              {user?.plan === 'premium' && (
-                <div className="absolute bottom-1 right-2 bg-[#2A4D38] border-2 border-white p-2 rounded-full text-white shadow-md">
-                  <CrownIcon className="w-4 h-4" fill="currentColor" />
-                </div>
+          {/* Avatar Ring Container */}
+          <div className="relative">
+            <div className="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-white ring-4 ring-emerald-500/20 flex items-center justify-center bg-slate-100 shadow-md">
+              {photoURL ? (
+                <img
+                  src={photoURL}
+                  alt={name || user?.name}
+                  className="w-full h-full object-cover"
+                  onError={() => setPhotoURL('')}
+                />
+              ) : (
+                <span className="text-4xl font-black text-emerald-700">
+                  {(name || user?.name || 'U').charAt(0).toUpperCase()}
+                </span>
               )}
             </div>
 
-            {/* ইউজার ইনফো এবং এডিট ফর্ম */}
-            <div className="flex-grow text-center md:text-left mt-2 w-full md:w-auto">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#A3B2A4] block mb-1">
-                THE AUTHOR
+            {user?.plan === 'premium' && (
+              <div className="absolute bottom-1 right-1 bg-amber-500 text-slate-950 p-2 rounded-full shadow-md border-2 border-white" title="Premium Member">
+                <FaCrown className="w-4 h-4" />
+              </div>
+            )}
+          </div>
+
+          {/* User Info & Edit Form */}
+          <div className="flex-1 text-center md:text-left w-full">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+              <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-100/80 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200">
+                Learner Author
               </span>
 
-              {isEditing ? (
-                <div className="space-y-3 max-w-sm mx-auto md:mx-0">
+              {user?.role === "admin" && (
+                <span className="text-[10px] font-black uppercase tracking-widest bg-rose-100 text-rose-800 px-3 py-1 rounded-full border border-rose-200">
+                  Administrator
+                </span>
+              )}
+            </div>
+
+            {isEditing ? (
+              <div className="space-y-3 max-w-md mx-auto md:mx-0">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-500 mb-1">Display Name</label>
                   <input
                     type="text"
                     value={name}
                     onChange={e => setName(e.target.value)}
-                    className="w-full bg-[#F4F6F4] border border-[#E1E5E1] p-2.5 rounded-xl outline-none focus:border-[#2A4D38] text-sm font-serif text-[#1E3326]"
-                    placeholder="Update Name"
+                    className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                    placeholder="Enter your full name"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-500 mb-1">Avatar Image URL</label>
                   <input
                     type="text"
                     value={photoURL}
                     onChange={e => setPhotoURL(e.target.value)}
-                    className="w-full bg-[#F4F6F4] border border-[#E1E5E1] p-2.5 rounded-xl outline-none focus:border-[#2A4D38] text-sm text-[#1E3326]"
-                    placeholder="Photo URL"
+                    className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                    placeholder="https://example.com/photo.jpg"
                   />
-                  <div className="flex gap-2 justify-center md:justify-start">
-                    <button
-                      onClick={handleUpdateProfile}
-                      disabled={isUpdating}
-                      className="bg-[#2A4D38] text-white px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1 hover:bg-[#1E3326] transition-all"
-                    >
-                      {isUpdating ? <FiLoader className="animate-spin" /> : <FiSave />} Save
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsEditing(false);
-                        setName(user?.name || '');
-                        setPhotoURL(user?.image || '');
-                      }}
-                      className="border border-[#E1E5E1] text-[#7A8A7D] px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-gray-50 flex items-center gap-1"
-                    >
-                      <FiX /> Cancel
-                    </button>
-                  </div>
                 </div>
-              ) : (
-                <>
-                  <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1E3326] tracking-tight">
-                    {name || user?.name}
-                  </h1>
-                  
-                  <div className="flex items-center justify-center md:justify-start gap-2 text-[#7A8A7D] text-sm mt-2 font-medium">
-                    <FiMail className="w-4 h-4" />
-                    <span>{user?.email}</span>
-                  </div>
-                </>
-              )}
 
-              {/* ডিভাইডার লাইন */}
-              <div className="border-t border-[#F0EFEF] my-6 w-full"></div>
+                <div className="flex gap-2 justify-center md:justify-start pt-2">
+                  <button
+                    onClick={handleUpdateProfile}
+                    disabled={isUpdating}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                  >
+                    {isUpdating ? <FiLoader className="animate-spin" /> : <FiSave />} Save Changes
+                  </button>
 
-              {/* স্ট্যাটস এরিয়া (৩ কলাম গ্রিড কাউন্টারসহ) */}
-              <div className="grid grid-cols-3 gap-4 max-w-xl text-left md:mx-0">
-                <div>
-                  <div className="text-3xl font-serif font-bold text-[#1E3326]">{userLessons.length}</div>
-                  <div className="text-[9px] font-mono font-bold text-[#A3B2A4] uppercase tracking-wider mt-0.5">
-                    LESSONS CREATED
-                  </div>
+                  <button
+                    onClick={() => {
+                      setIsEditing(false);
+                      setName(user?.name || '');
+                      setPhotoURL(user?.image || '');
+                    }}
+                    className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+                  >
+                    <FiX /> Cancel
+                  </button>
                 </div>
+              </div>
+            ) : (
+              <>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                  {name || user?.name || "User Profile"}
+                </h1>
                 
-                <div className="border-l border-[#ECEBE9] pl-6">
-                  <div className="text-3xl font-serif font-bold text-[#1E3326]">0</div>
-                  <div className="text-[9px] font-mono font-bold text-[#A3B2A4] uppercase tracking-wider mt-0.5">
-                    WISDOM SAVED
-                  </div>
+                <div className="flex items-center justify-center md:justify-start gap-2 text-slate-500 text-sm mt-1 font-medium">
+                  <FiMail className="w-4 h-4 text-emerald-600" />
+                  <span>{user?.email}</span>
                 </div>
+              </>
+            )}
 
-                <div className="border-l border-[#ECEBE9] pl-6 flex flex-col justify-center">
-                  {user?.plan === 'premium' ? (
-                    <div className="flex items-center gap-1.5 text-[#2A4D38]">
-                      <CrownIcon className="w-5 h-5 text-[#8BA493]" fill="currentColor" />
-                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[#8BA493] mt-1">
-                        PREMIUM MEMBER
-                      </span>
-                    </div>
-                  ) : (
-                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[#A3B2A4]">
-                      FREE MEMBER
-                    </span>
-                  )}
+            <hr className="my-6 border-slate-100" />
+
+            {/* Stats Counter Grid */}
+            <div className="grid grid-cols-3 gap-4 max-w-lg text-left">
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-slate-900">{userLessons.length}</div>
+                <div className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mt-0.5">
+                  Lessons Created
+                </div>
+              </div>
+              
+              <div className="border-l border-slate-200 pl-4 sm:pl-6">
+                <div className="text-2xl sm:text-3xl font-black text-slate-900">{userLessons.length * 15}</div>
+                <div className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mt-0.5">
+                  Impact Points
                 </div>
               </div>
 
+              <div className="border-l border-slate-200 pl-4 sm:pl-6 flex flex-col justify-center">
+                {user?.plan === 'premium' ? (
+                  <div className="flex items-center gap-1.5 text-amber-600 font-bold text-xs">
+                    <FaCrown className="w-4 h-4" />
+                    <span>PRO MEMBER</span>
+                  </div>
+                ) : (
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                    FREE MEMBER
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* ছবির মতো ডান পাশের মিনিমালিস্ট "Edit Profile" বাটন */}
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="md:absolute md:top-12 md:right-12 border border-[#E1E5E1] hover:border-[#2A4D38] hover:bg-[#F4F6F4] text-[#55665A] font-semibold text-xs py-2.5 px-5 rounded-full transition-all flex items-center gap-1.5"
-              >
-                <FiEdit2 className="w-3 h-3" />
-                <span>Edit Profile</span>
-              </button>
-            )}
-
           </div>
-        </section>
 
-        {/* --- SECTION TITLE (ছবির মতো পাতার আইকনসহ ডার্ক গ্রিন হেডিং) --- */}
-        <div className="flex items-center gap-2 mb-8 text-white">
-          <div className="bg-[#1E3326] p-2 rounded-lg text-[#A6C0AF]">
-            <LeafIcon className="w-4 h-4" />
-          </div>
-          <h2 className="text-3xl font-serif font-bold tracking-tight text-green-900">
-            Published Works
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 font-bold text-xs py-2.5 px-5 rounded-2xl transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+            >
+              <FiEdit2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Edit Profile</span>
+            </button>
+          )}
+
+        </div>
+      </section>
+
+      {/* Published Works Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <FiBookOpen className="text-emerald-600" /> Published Works & Insights ({userLessons.length})
           </h2>
         </div>
 
-        {/* --- LESSONS GRID (কার্ডের ডিজাইন ট্যাগসহ) --- */}
         {userLessons.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {userLessons.map((lesson) => (
               <motion.div
                 key={lesson._id}
-                whileHover={{ y: -6 }}
-                className="bg-white rounded-[28px] p-6 shadow-md flex flex-col justify-between h-full group transition-all"
+                whileHover={{ y: -4 }}
+                className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between h-full hover:border-emerald-300 transition-all"
               >
                 <div>
-                  {/* ব্যাজ রো (যেমন ছবিতে আছে: CAREER / FREE) */}
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="bg-[#E4ECE7] text-[#2A4D38] text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
-                      ✦ {lesson.category || 'General'}
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="bg-emerald-50 text-emerald-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider border border-emerald-100">
+                      {lesson.category || 'General'}
                     </span>
                     
-                    <span className={`text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                      lesson.accessLevel === 'Premium' 
-                        ? 'bg-[#E3A834] text-white' 
-                        : 'bg-[#E4ECE7] text-[#2A4D38]'
+                    <span className={`text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider ${
+                      lesson.accessLevel === 'premium' 
+                        ? 'bg-amber-100 text-amber-800 border border-amber-200' 
+                        : 'bg-slate-100 text-slate-600'
                     }`}>
                       {lesson.accessLevel || 'Free'}
                     </span>
                   </div>
 
-                  {/* লেসন ইমেজ (অপশনাল থাম্বনেইল) */}
                   {lesson.image && (
-                    <div className="w-full h-40 rounded-2xl overflow-hidden mb-4 bg-gray-100">
+                    <div className="w-full h-40 rounded-2xl overflow-hidden mb-4 bg-slate-100">
                       <img src={lesson.image} alt={lesson.title} className="w-full h-full object-cover" />
                     </div>
                   )}
 
-                  {/* টাইটেল */}
-                  <h3 className="text-xl font-serif font-bold text-[#1E3326] group-hover:text-[#2A4D38] transition-colors line-clamp-2">
+                  <h3 className="text-lg font-bold text-slate-900 line-clamp-2">
                     {lesson.title}
                   </h3>
+
+                  <p className="text-slate-500 text-xs mt-2 line-clamp-2 leading-relaxed">
+                    {lesson.description}
+                  </p>
                 </div>
 
-                <p className="text-xs font-mono text-[#7A8A7D] mt-4 flex items-center gap-1">
-                  Updated Archive
-                </p>
+                <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-400">
+                  <span>❤️ {lesson.likes || 0} Likes</span>
+                  <span>💬 {lesson.comments || 0} Comments</span>
+                </div>
               </motion.div>
             ))}
           </div>
         ) : (
-          <div className="py-16 text-center border-2 border-dashed border-[#4B7059] rounded-[28px] text-[#A6C0AF] font-mono text-sm uppercase tracking-widest">
-            No published entries found in your archive.
+          <div className="py-12 text-center bg-white border border-slate-200/80 rounded-3xl text-slate-400 text-sm font-medium">
+            No published entries found in your profile repository.
           </div>
         )}
-        
       </div>
+
     </div>
   );
 };
 
-export default UserProfile;
+export default UserProfile;
