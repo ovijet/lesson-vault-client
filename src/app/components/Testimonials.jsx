@@ -158,7 +158,7 @@ export default function Testimonials() {
 
                   {/* Quote Text */}
                   <p className="text-slate-700 text-base sm:text-lg leading-relaxed font-normal italic relative z-10 mb-8">
-                    "{item.quote}"
+                    &quot;{item.quote}&quot;
                   </p>
                 </div>
 

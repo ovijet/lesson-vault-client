@@ -18,10 +18,6 @@ export default function ManageUsers() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch all users
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   const fetchUsers = () => {
     setLoading(true);
     fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`)
@@ -36,6 +32,10 @@ export default function ManageUsers() {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   // Role Toggle Handler (Admin <-> User)
   const handleToggleRole = async (userId) => {

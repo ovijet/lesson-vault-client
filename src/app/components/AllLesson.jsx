@@ -161,7 +161,7 @@ const AllLesson = () => {
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">No Lessons Found</h3>
             <p className="text-slate-500 text-sm mb-6">
-              We couldn't find any lessons matching your current filters. Try changing your search keywords or category.
+              We couldn&apos;t find any lessons matching your current filters. Try changing your search keywords or category.
             </p>
             <button
               onClick={() => {

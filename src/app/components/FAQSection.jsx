@@ -140,7 +140,7 @@ export default function FAQSection() {
           <div className="lg:col-span-8 space-y-4">
             {filteredFaqs.length === 0 ? (
               <div className="bg-white rounded-3xl p-8 text-center border border-slate-200 text-slate-500">
-                No matching questions found for "{searchQuery}". Try searching with different terms!
+                No matching questions found for &quot;{searchQuery}&quot;. Try searching with different terms!
               </div>
             ) : (
               filteredFaqs.map((faq, idx) => {
@@ -197,7 +197,7 @@ export default function FAQSection() {
 
               <h3 className="text-2xl font-bold mb-3">Still have questions?</h3>
               <p className="text-emerald-100 text-sm leading-relaxed mb-6">
-                Can't find the answer you're looking for? Reach out to our community support team and we'll reply within 24 hours.
+                Can&apos;t find the answer you&apos;re looking for? Reach out to our community support team and we&apos;ll reply within 24 hours.
               </p>
 
               <div className="space-y-3">

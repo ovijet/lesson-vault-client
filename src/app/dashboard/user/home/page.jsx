@@ -80,7 +80,7 @@ const HomePage = () => {
             </h1>
 
             <p className="text-slate-300 mt-2 text-sm sm:text-base max-w-xl">
-              "Knowledge speaks, but wisdom listens." Continue documenting your life realizations and impacting others.
+              &quot;Knowledge speaks, but wisdom listens.&quot; Continue documenting your life realizations and impacting others.
             </p>
           </div>
 
