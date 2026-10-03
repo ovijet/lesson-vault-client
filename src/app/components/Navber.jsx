@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
-import { BiChevronDown, BiLogOut, BiUser, BiGridAlt, BiStar } from "react-icons/bi";
+import {
+  BiChevronDown,
+  BiLogOut,
+  BiUser,
+  BiGridAlt,
+  BiStar,
+} from "react-icons/bi";
 import { FaGraduationCap, FaShieldAlt } from "react-icons/fa";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,27 +25,28 @@ const Navbar = () => {
   const user = session?.user;
   const role = user?.role || "user";
 
-  const baseLinks = [
-    { name: "Home", href: "/" },
-    { name: "Public Lessons", href: "/public-lessons" },
-  ];
-
+ const baseLinks = [
+  { name: "Home", href: "/" },
+  { name: "Public Lessons", href: "/public-lessons" },
+];
   const userLinks = user
     ? [
-        { name: "Add Lesson", href: "/dashboard/user/add-lesson" },
-        { name: "My Lessons", href: "/dashboard/user/my-lesson" },
-        { name: "Favorites", href: "/dashboard/user/favorites" },
+        {
+          name: "Dashboard",
+          href: user.role === "admin" ? "/dashboard/admin" : "/dashboard/user",
+        },
       ]
     : [];
 
-  const adminLinks = user?.role === "admin"
-    ? [
-        { name: "Manage Lessons", href: "/dashboard/admin/manage-lessons" },
-        { name: "Manage Users", href: "/dashboard/admin/manage-users" },
-      ]
-    : [];
+  // const adminLinks =
+  //   user?.role === "admin"
+  //     ? [
+  //         { name: "Manage Lessons", href: "/dashboard/admin/manage-lessons" },
+  //         { name: "Manage Users", href: "/dashboard/admin/manage-users" },
+  //       ]
+  //     : [];
 
-  const navLinks = [...baseLinks, ...userLinks, ...adminLinks];
+  const navLinks = [...baseLinks, ...userLinks];
 
   const handleSignOut = async () => {
     const { error } = await authClient.signOut();
@@ -51,7 +58,6 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-emerald-100/60 shadow-xs select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        
         {/* Logo Section */}
         <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
           <motion.div
@@ -110,7 +116,7 @@ const Navbar = () => {
             <div className="relative">
               <div className="flex items-center gap-3">
                 {/* Premium Badge & Upgrade */}
-                {(user?.plan === "premium" || user?.plan === "pro") ? (
+                {user?.plan === "premium" || user?.plan === "pro" ? (
                   <div className="flex items-center gap-1 bg-amber-50 border border-amber-200/80 rounded-full px-3 py-1 shadow-xs">
                     <span className="text-xs">💎</span>
                     <span className="font-bold text-amber-700 tracking-wider uppercase text-[10px]">
@@ -131,8 +137,14 @@ const Navbar = () => {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center gap-2 border border-slate-200/80 rounded-full p-1 pr-3 hover:bg-slate-50 hover:border-emerald-300 transition-all duration-200"
                 >
-                  <Avatar size="sm" className="w-7 h-7 ring-2 ring-emerald-500/20 flex-shrink-0">
-                    <Avatar.Image src={user?.image} referrerPolicy="no-referrer" />
+                  <Avatar
+                    size="sm"
+                    className="w-7 h-7 ring-2 ring-emerald-500/20 flex-shrink-0"
+                  >
+                    <Avatar.Image
+                      src={user?.image}
+                      referrerPolicy="no-referrer"
+                    />
                     <Avatar.Fallback className="bg-emerald-100 text-emerald-700 font-bold text-xs">
                       {user?.name?.charAt(0).toUpperCase()}
                     </Avatar.Fallback>
@@ -164,13 +176,21 @@ const Navbar = () => {
                       className="absolute right-0 mt-2.5 w-60 bg-white border border-slate-200/80 rounded-2xl shadow-xl z-20 overflow-hidden"
                     >
                       <div className="p-4 bg-slate-50 border-b border-slate-100">
-                        <p className="font-bold text-slate-900 text-sm truncate">{user?.name}</p>
-                        <p className="text-xs text-slate-500 truncate mt-0.5">{user?.email}</p>
-                        
+                        <p className="font-bold text-slate-900 text-sm truncate">
+                          {user?.name}
+                        </p>
+                        <p className="text-xs text-slate-500 truncate mt-0.5">
+                          {user?.email}
+                        </p>
+
                         <div className="flex items-center gap-2 mt-2.5">
-                          <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            role === "admin" ? "bg-rose-50 text-rose-600 border border-rose-100" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                          }`}>
+                          <span
+                            className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                              role === "admin"
+                                ? "bg-rose-50 text-rose-600 border border-rose-100"
+                                : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            }`}
+                          >
                             {role}
                           </span>
                         </div>
@@ -178,19 +198,29 @@ const Navbar = () => {
 
                       <div className="p-1.5 space-y-0.5">
                         <Link
-                          href={role === "admin" ? "/dashboard/admin/profile" : "/dashboard/user/profile"}
+                          href={
+                            role === "admin"
+                              ? "/dashboard/admin/profile"
+                              : "/dashboard/user/profile"
+                          }
                           className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60 rounded-xl transition"
                           onClick={() => setIsDropdownOpen(false)}
                         >
-                          <BiUser className="text-lg text-slate-400" /> My Profile
+                          <BiUser className="text-lg text-slate-400" /> My
+                          Profile
                         </Link>
 
                         <Link
-                          href={role === "admin" ? "/dashboard/admin" : "/dashboard/user"}
+                          href={
+                            role === "admin"
+                              ? "/dashboard/admin"
+                              : "/dashboard/user"
+                          }
                           className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60 rounded-xl transition"
                           onClick={() => setIsDropdownOpen(false)}
                         >
-                          <BiGridAlt className="text-lg text-slate-400" /> Dashboard
+                          <BiGridAlt className="text-lg text-slate-400" />{" "}
+                          Dashboard
                         </Link>
 
                         <hr className="border-slate-100 my-1" />
@@ -232,21 +262,29 @@ const Navbar = () => {
             className="lg:hidden bg-white border-t border-slate-100 shadow-inner overflow-hidden"
           >
             <div className="px-4 py-4 space-y-1.5 max-h-[calc(100vh-4rem)] overflow-y-auto">
-              
               {user && (
                 <div className="flex items-center gap-3 p-3 bg-emerald-50/60 rounded-2xl mb-3 border border-emerald-100">
                   <Avatar size="sm" className="w-9 h-9 flex-shrink-0">
-                    <Avatar.Image src={user?.image} referrerPolicy="no-referrer" />
+                    <Avatar.Image
+                      src={user?.image}
+                      referrerPolicy="no-referrer"
+                    />
                     <Avatar.Fallback className="bg-emerald-200 text-emerald-800 font-bold">
                       {user?.name?.charAt(0).toUpperCase()}
                     </Avatar.Fallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-slate-900 truncate">{user?.name}</p>
-                    <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                    <p className="text-sm font-bold text-slate-900 truncate">
+                      {user?.name}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {user?.email}
+                    </p>
                   </div>
                   {(user?.plan === "premium" || user?.plan === "pro") && (
-                    <span className="text-sm bg-amber-100 px-2 py-0.5 rounded-full flex-shrink-0">💎</span>
+                    <span className="text-sm bg-amber-100 px-2 py-0.5 rounded-full flex-shrink-0">
+                      💎
+                    </span>
                   )}
                 </div>
               )}
@@ -273,7 +311,7 @@ const Navbar = () => {
 
               {user ? (
                 <div className="space-y-1.5 pt-1">
-                  {(user?.plan !== "premium" && user?.plan !== "pro") && (
+                  {user?.plan !== "premium" && user?.plan !== "pro" && (
                     <Link
                       href="/pricing"
                       onClick={() => setIsMobileOpen(false)}
@@ -284,14 +322,20 @@ const Navbar = () => {
                     </Link>
                   )}
                   <Link
-                    href={role === "admin" ? "/dashboard/admin/profile" : "/dashboard/user/profile"}
+                    href={
+                      role === "admin"
+                        ? "/dashboard/admin/profile"
+                        : "/dashboard/user/profile"
+                    }
                     onClick={() => setIsMobileOpen(false)}
                     className="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-xl"
                   >
                     Your Profile
                   </Link>
                   <Link
-                    href={role === "admin" ? "/dashboard/admin" : "/dashboard/user"}
+                    href={
+                      role === "admin" ? "/dashboard/admin" : "/dashboard/user"
+                    }
                     onClick={() => setIsMobileOpen(false)}
                     className="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 rounded-xl"
                   >
@@ -309,12 +353,20 @@ const Navbar = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-2.5 pt-2">
-                  <Link href="/login" onClick={() => setIsMobileOpen(false)} className="w-full">
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="w-full"
+                  >
                     <button className="w-full py-2.5 text-sm font-bold text-slate-700 border border-slate-200 rounded-xl hover:bg-slate-50 transition">
                       Sign In
                     </button>
                   </Link>
-                  <Link href="/register" onClick={() => setIsMobileOpen(false)} className="w-full">
+                  <Link
+                    href="/register"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="w-full"
+                  >
                     <button className="w-full py-2.5 text-sm font-bold bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all">
                       Get Started
                     </button>

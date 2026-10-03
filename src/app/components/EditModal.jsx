@@ -172,6 +172,7 @@ const EditModal = ({ lesson }) => {
                     {imageUrl ? (
                       <img
                         src={imageUrl}
+                        alt=""
                         className="w-full h-full object-cover"
                       />
                     ) : (

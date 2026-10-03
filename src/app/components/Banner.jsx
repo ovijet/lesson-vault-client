@@ -20,21 +20,21 @@ const slides = [
     subtitle: "Every Lesson Makes You Stronger",
     desc: "Explore inspiring real-world life lessons shared by people around the globe. Learn from authentic experiences and elevate your mindset daily.",
     img: "https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg",
-    badge: "Share Wisdom • Elevate Minds"
+    badge: "Share Wisdom • Elevate Minds",
   },
   {
     title: "Share Your Journey",
     subtitle: "Your Experience Can Impact Lives",
     desc: "Turn your triumphs, career milestones, and hard-earned wisdom into valuable guidance for thousands of aspiring learners.",
     img: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg",
-    badge: "Empower The Next Gen"
+    badge: "Empower The Next Gen",
   },
   {
     title: "Grow Together Daily",
     subtitle: "A Thriving Global Community",
     desc: "Read, reflect, upvote, and connect with lifelong learners building a brighter future through shared wisdom.",
     img: "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg",
-    badge: "Interactive Community Vault"
+    badge: "Interactive Community Vault",
   },
 ];
 
@@ -88,7 +88,7 @@ const Banner = () => {
                       </button>
                     </Link>
 
-                    <Link href="/dashboard/user/add-lesson">
+                    <Link href="/login">
                       <button className="flex items-center gap-2 bg-white hover:bg-emerald-50/80 text-emerald-800 font-bold border-2 border-emerald-600/30 hover:border-emerald-600 rounded-2xl px-7 py-3.5 shadow-xs transition-all duration-300 hover:scale-105 cursor-pointer text-sm sm:text-base">
                         Share Your Lesson
                       </button>
@@ -166,4 +166,3 @@ const Banner = () => {
 };
 
 export default Banner;
-
