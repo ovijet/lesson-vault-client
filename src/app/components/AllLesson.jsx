@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 
 const AllLesson = () => {
   const { data: session } = authClient.useSession();
-  const isPremiumUser = session?.user?.plan === "premium";
+  const isPremiumUser = session?.user?.plan === "premium" || session?.user?.plan === "pro";
 
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);

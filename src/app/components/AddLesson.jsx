@@ -25,7 +25,7 @@ const AddLesson = async () => {
     console.error("Featured lessons fetch error:", err);
   }
 
-  const isPremiumUser = session?.user?.plan === "premium";
+  const isPremiumUser = session?.user?.plan === "premium" || session?.user?.plan === "pro";
 
   return (
     <section className="py-24 bg-gradient-to-b from-slate-50/50 via-white to-white font-sans">

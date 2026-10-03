@@ -68,7 +68,7 @@ const HomePage = () => {
               <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                 Personal Growth Vault
               </span>
-              {user?.plan === "premium" && (
+              {(user?.plan === "premium" || user?.plan === "pro") && (
                 <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                   <FaCrown className="text-xs" /> PRO
                 </span>

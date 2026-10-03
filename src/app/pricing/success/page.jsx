@@ -34,7 +34,11 @@ export default function SuccessPage({ customerEmail }) {
         );
 
         if (response.ok) {
-         
+          try {
+            await authClient.updateUser({ plan: "pro" });
+          } catch (e) {
+            console.error("Session token update failed:", e);
+          }
           await refetch();
         }
       } catch (err) {

@@ -9,7 +9,7 @@ import Link from 'next/link';
 const PublicDetailsPage = ({ data }) => {
   const { data: session } = authClient.useSession();
 
-  const isPremiumUser = session?.user?.plan === "premium";
+  const isPremiumUser = session?.user?.plan === "premium" || session?.user?.plan === "pro";
 
   // Lock premium lessons for non-premium members
   if (data.accessLevel === "premium" && !isPremiumUser) {

@@ -4,13 +4,7 @@ import React, { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import {
   Button,
-  Card,
-  Description,
-  FieldError,
-  Form,
-  Input,
-  Label,
-  TextField,
+  Spinner,
 } from "@heroui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,20 +12,17 @@ import { FcGoogle } from "react-icons/fc";
 import {
   BiEnvelope,
   BiLock,
-  BiRefresh,
-  BiLogIn,
   BiShield,
+  BiRightArrowAlt,
 } from "react-icons/bi";
 import { FaGraduationCap } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 
-export default function SignUpPage() {
+export default function LoginPage() {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-
-  // Controlled input states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -41,7 +32,20 @@ export default function SignUpPage() {
   const handleAdminDemo = () => {
     setEmail(ADMIN_EMAIL);
     setPassword(ADMIN_PASSWORD);
-    toast.success("Admin demo!");
+    toast.success("Admin credentials loaded!");
+  };
+
+  const handleSuccessfulLogin = (data) => {
+    toast.success("Welcome back to LessonVault!");
+    const userRole = data?.user?.role || "user";
+    const role = userRole.trim().toLowerCase();
+    
+    // Ensure dashboard redirection
+    if (role === "admin") {
+      router.push("/dashboard/admin");
+    } else {
+      router.push("/dashboard/user");
+    }
   };
 
   const onSubmit = async (e) => {
@@ -49,9 +53,9 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      const userData = { email, password };
       const { data, error } = await authClient.signIn.email({
-        ...userData,
+        email,
+        password,
       });
 
       if (error) {
@@ -60,13 +64,7 @@ export default function SignUpPage() {
       }
 
       if (data) {
-        toast.success("Welcome back! Login successful");
-        const role = data?.user?.role?.trim().toLowerCase();
-        if (role === "admin") {
-          router.push("/dashboard/admin");
-        } else {
-          router.push("/dashboard/user");
-        }
+        handleSuccessfulLogin(data);
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -76,205 +74,187 @@ export default function SignUpPage() {
   };
 
   const GoogleSignIn = async () => {
-    const { data, error } = await authClient.signIn.social({
-      provider: "google",
-    });
-
-    if (data) {
-      toast.success("Login successful");
-      const role = data?.user?.role?.trim().toLowerCase();
-      if (role === "admin") {
-        router.push("/dashboard/admin");
-      } else {
-        router.push("/dashboard/user");
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: "google",
+      });
+      
+      if (data) {
+        handleSuccessfulLogin(data);
       }
+      
+      if (error) {
+        toast.error(error?.message || "Something went wrong with Google");
+      }
+    } catch (error) {
+       toast.error("Google sign in failed.");
     }
-
-    if (error) {
-      toast.error(error?.message || "Something went wrong with Google");
-    }
-  };
-
-  const handleClear = () => {
-    setEmail("");
-    setPassword("");
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut", when: "beforeChildren", staggerChildren: 0.08 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -15 },
-    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50/60 via-slate-50 to-teal-50/40 p-4 sm:p-6 select-none font-sans relative overflow-hidden">
-      {/* Glow shapes */}
-      <div className="absolute top-10 left-10 w-80 h-80 bg-emerald-200/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-80 h-80 bg-teal-200/30 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen flex bg-[#030712] text-slate-200 selection:bg-emerald-500/30 selection:text-emerald-200">
+      
+      {/* Left side: Premium Illustration & Branding */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900 border-r border-slate-800/60 items-center justify-center">
+        {/* Abstract animated background */}
+        <div className="absolute inset-0 z-0">
+           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-600/20 blur-[120px] rounded-full animate-pulse-slow"></div>
+           <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-teal-600/10 blur-[150px] rounded-full animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+           
+           {/* Grid overlay */}
+           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        </div>
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="w-full max-w-md relative z-10"
-      >
-        <Card className="bg-white/85 backdrop-blur-2xl border border-slate-200/80 shadow-2xl rounded-3xl overflow-hidden p-1">
-          {/* Header */}
-          <div className="text-center pt-8 pb-3 px-6">
-            <motion.div
-              whileHover={{ rotate: -6, scale: 1.08 }}
-              className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-emerald-600/30 text-2xl"
-            >
-              <FaGraduationCap />
-            </motion.div>
+        <div className="relative z-10 p-12 max-w-xl">
+           <motion.div 
+             initial={{ opacity: 0, y: 30 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, ease: "easeOut" }}
+           >
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white mb-8 shadow-[0_0_40px_rgba(16,185,129,0.4)]">
+                 <FaGraduationCap className="text-3xl" />
+              </div>
+              <h1 className="text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+                Unlock Your <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Potential</span> Today.
+              </h1>
+              <p className="text-lg text-slate-400 mb-10 leading-relaxed font-medium">
+                LessonVault is your premium destination for curated learning. Access world-class resources, track your progress, and master new skills.
+              </p>
+              
+              <div className="flex items-center gap-4">
+                 <div className="flex -space-x-3">
+                   {[...Array(4)].map((_, i) => (
+                     <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center overflow-hidden" style={{ zIndex: 4 - i }}>
+                        <img src={`https://i.pravatar.cc/100?img=${i+12}`} alt="User" className="w-full h-full object-cover opacity-80" />
+                     </div>
+                   ))}
+                 </div>
+                 <div className="text-sm font-medium text-slate-400">
+                   Join <span className="text-white font-bold">10,000+</span> learners globally.
+                 </div>
+              </div>
+           </motion.div>
+        </div>
+      </div>
 
-            <motion.h1
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900"
-            >
-              Login to <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">LessonVault</span>
-            </motion.h1>
+      {/* Right side: Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
+        {/* Mobile glow */}
+        <div className="absolute top-0 right-0 w-full h-full bg-emerald-900/10 blur-[100px] rounded-full pointer-events-none lg:hidden"></div>
 
-            <p className="text-xs sm:text-sm text-slate-500 mt-1.5 font-medium">
-              Welcome back! Pick up your learning path where you left off.
-            </p>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="w-full max-w-md relative z-10"
+        >
+          {/* Logo for mobile */}
+          <div className="lg:hidden flex flex-col items-center mb-10">
+             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white mb-4 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                 <FaGraduationCap className="text-2xl" />
+             </div>
+             <h2 className="text-2xl font-bold text-white tracking-tight">LessonVault</h2>
           </div>
 
-          {/* Admin Demo Button */}
-          <motion.div variants={itemVariants} className="px-5 sm:px-7 pt-2">
+          <div className="mb-10 text-center lg:text-left">
+            <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">Welcome back</h2>
+            <p className="text-slate-400 font-medium text-sm">Enter your credentials to access your dashboard</p>
+          </div>
+
+          <form onSubmit={onSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Email Address</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <BiEnvelope className="text-slate-500 group-focus-within:text-emerald-400 transition-colors text-lg" />
+                </div>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-white placeholder-slate-600 outline-none backdrop-blur-sm shadow-inner"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Password</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <BiLock className="text-slate-500 group-focus-within:text-emerald-400 transition-colors text-lg" />
+                </div>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-white placeholder-slate-600 outline-none backdrop-blur-sm shadow-inner"
+                />
+              </div>
+              <div className="flex justify-end pt-1">
+                <Link href="#" className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+
             <Button
-              type="button"
-              onClick={handleAdminDemo}
-              className="w-full h-11 rounded-xl border border-emerald-600/30 bg-emerald-50/60 text-emerald-800 hover:bg-emerald-100/80 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer"
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-6 mt-2 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] text-base flex items-center justify-center gap-2 group cursor-pointer"
             >
-              <BiShield className="text-lg text-emerald-600" />
-              <span>Admin Demo</span>
+              {isLoading ? (
+                <Spinner size="sm" color="current" />
+              ) : (
+                <>
+                  Sign In to Dashboard
+                  <BiRightArrowAlt className="text-xl group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
             </Button>
-          </motion.div>
+          </form>
 
-          {/* Form */}
-          <Form onSubmit={onSubmit} className="px-5 sm:px-7 py-5 space-y-4">
-            {/* Email */}
-            <motion.div variants={itemVariants} className="w-full">
-              <TextField
-                isRequired
-                name="email"
-                type="email"
-                value={email}
-                onChange={setEmail}
-                className="w-full"
-              >
-                <Label className="text-xs font-semibold text-slate-700 mb-1">
-                  Email Address
-                </Label>
-
-                <div className="relative flex items-center">
-                  <BiEnvelope className="absolute left-3.5 text-slate-400 text-lg z-10" />
-                  <Input
-                    placeholder="john@example.com"
-                    className="pl-10 w-full rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-500 transition-all text-sm"
-                  />
-                </div>
-
-                <FieldError className="text-xs text-rose-500 mt-1" />
-              </TextField>
-            </motion.div>
-
-            {/* Password */}
-            <motion.div variants={itemVariants} className="w-full">
-              <TextField
-                isRequired
-                minLength={8}
-                name="password"
-                type="password"
-                value={password}
-                onChange={setPassword}
-                className="w-full"
-              >
-                <Label className="text-xs font-semibold text-slate-700 mb-1">
-                  Password
-                </Label>
-
-                <div className="relative flex items-center">
-                  <BiLock className="absolute left-3.5 text-slate-400 text-lg z-10" />
-                  <Input
-                    placeholder="Enter your password"
-                    className="pl-10 w-full rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-500 transition-all text-sm"
-                  />
-                </div>
-
-                <Description className="text-[11px] text-slate-400 mt-1">
-                  8+ characters with 1 uppercase & 1 number
-                </Description>
-
-                <FieldError className="text-xs text-rose-500 mt-1" />
-              </TextField>
-            </motion.div>
-
-            {/* Actions */}
-            <motion.div variants={itemVariants} className="flex flex-col gap-2.5 pt-2">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl font-bold transition shadow-lg shadow-emerald-600/20 text-sm flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <BiLogIn className="text-lg" />
-                {isLoading ? "Signing In..." : "Sign In"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="bordered"
-                onClick={handleClear}
-                className="w-full h-10 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <BiRefresh className="text-base" />
-                Clear Form
-              </Button>
-            </motion.div>
-          </Form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 px-7 my-2">
-            <div className="h-px bg-slate-200 flex-1" />
-            <span className="text-[11px] text-slate-400 uppercase tracking-widest font-extrabold">OR</span>
-            <div className="h-px bg-slate-200 flex-1" />
+          <div className="mt-8 relative">
+             <div className="absolute inset-0 flex items-center">
+               <div className="w-full border-t border-slate-800"></div>
+             </div>
+             <div className="relative flex justify-center text-sm">
+               <span className="px-4 bg-[#030712] text-slate-500 font-medium">Or continue with</span>
+             </div>
           </div>
 
-          {/* Google */}
-          <div className="px-7 pb-6 flex flex-col gap-3">
+          <div className="mt-8 grid grid-cols-2 gap-4">
             <Button
               onClick={GoogleSignIn}
-              variant="bordered"
-              className="w-full h-12 flex items-center justify-center gap-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold transition cursor-pointer"
+              className="w-full py-5 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/50 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
             >
               <FcGoogle size={20} />
-              Continue with Google
+              Google
+            </Button>
+            
+            <Button
+              onClick={handleAdminDemo}
+              className="w-full py-5 bg-emerald-950/30 hover:bg-emerald-900/40 border border-emerald-800/50 text-emerald-400 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+            >
+              <BiShield size={20} />
+              Demo Admin
             </Button>
           </div>
 
-          {/* Footer Redirection */}
-          <div className="pb-6 text-center text-xs text-slate-500 font-medium">
-            Don't have an account?{" "}
-            <Link
-              href="/register"
-              className="text-emerald-600 hover:text-emerald-700 font-bold ml-0.5 transition underline underline-offset-4"
-            >
-              Register free
+          <p className="mt-10 text-center text-sm text-slate-500">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="font-bold text-white hover:text-emerald-400 transition-colors">
+              Create an account
             </Link>
-          </div>
-        </Card>
-      </motion.div>
+          </p>
+
+        </motion.div>
+      </div>
     </div>
   );
 }
-

@@ -127,7 +127,7 @@ const UserProfile = () => {
                 )}
               </div>
               
-              {user?.plan === 'premium' && (
+              {(user?.plan === 'premium' || user?.plan === 'pro') && (
                 <div className="absolute bottom-1 right-2 bg-amber-500 border-2 border-slate-900 p-2 rounded-full text-slate-950 shadow-md">
                   <FaCrown className="w-4 h-4" />
                 </div>
@@ -209,7 +209,7 @@ const UserProfile = () => {
                 </div>
 
                 <div className="bg-white/5 border border-white/10 p-4 rounded-2xl flex flex-col justify-center">
-                  {user?.plan === 'premium' ? (
+                  {(user?.plan === 'premium' || user?.plan === 'pro') ? (
                     <div className="flex items-center gap-1.5 text-amber-400">
                       <FaCrown className="w-4 h-4" />
                       <span className="text-[10px] font-black uppercase tracking-wider">

@@ -2,19 +2,11 @@
 
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { BiUser, BiImage, BiEnvelope, BiLock, BiChevronDown, BiRefresh } from "react-icons/bi";
+import { BiUser, BiImage, BiEnvelope, BiLock, BiRightArrowAlt } from "react-icons/bi";
 import { FaGraduationCap } from "react-icons/fa";
 import {
   Button,
-  Card,
-  Description,
-  FieldError,
-  Form,
-  Input,
-  Label,
-  TextField,
-  ListBox,
-  Select
+  Spinner,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -22,7 +14,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import Link from "next/link";
 
-const RegisterPage = () => {
+export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,206 +25,230 @@ const RegisterPage = () => {
     const formData = new FormData(e.currentTarget);
     const userData = Object.fromEntries(formData.entries());
 
-    const { data, error } = await authClient.signUp.email({
-      ...userData,
-      plan: 'free',
-    });
+    try {
+      const { data, error } = await authClient.signUp.email({
+        ...userData,
+        plan: 'free',
+      });
 
-    setIsLoading(false);
+      if (error) {
+        toast.error(error?.message || "Something went wrong");
+        return;
+      }
 
-    if (error) {
-      toast.error(error?.message || "Something went wrong");
-      return;
-    }
-
-    if (data) {
-      toast.success("Signup successful");
-      router.push("/");
+      if (data) {
+        toast.success("Signup successful! Welcome to LessonVault.");
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const GoogleSignUp = async () => {
-    const { data, error } = await authClient.signIn.social({
-      provider: "google",
-    });
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: "google",
+      });
 
-    if (error) {
-      toast.error(error?.message || "Something went wrong");
-      return;
+      if (error) {
+        toast.error(error?.message || "Something went wrong with Google");
+        return;
+      }
+
+      if (data) {
+        toast.success("Signup successful! Welcome to LessonVault.");
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error("Google sign up failed.");
     }
-
-    if (data) {
-      toast.success("Signup successful");
-      router.push("/");
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut", when: "beforeChildren", staggerChildren: 0.08 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -15 },
-    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50/60 via-slate-50 to-teal-50/40 p-4 sm:p-6 select-none font-sans relative overflow-hidden">
-      {/* Glow shapes */}
-      <div className="absolute top-10 left-10 w-80 h-80 bg-emerald-200/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-80 h-80 bg-teal-200/30 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen flex bg-[#030712] text-slate-200 selection:bg-emerald-500/30 selection:text-emerald-200">
+      
+      {/* Left side: Premium Illustration & Branding */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900 border-r border-slate-800/60 items-center justify-center">
+        {/* Abstract animated background */}
+        <div className="absolute inset-0 z-0">
+           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-600/20 blur-[120px] rounded-full animate-pulse-slow"></div>
+           <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-teal-600/10 blur-[150px] rounded-full animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+           
+           {/* Grid overlay */}
+           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        </div>
 
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="w-full max-w-md relative z-10"
-      >
-        <Card className="bg-white/85 backdrop-blur-2xl border border-slate-200/80 shadow-2xl rounded-3xl overflow-hidden p-1">
-          
-          {/* Header Section */}
-          <div className="text-center pt-8 pb-3 px-6">
-            <motion.div
-              whileHover={{ rotate: -6, scale: 1.08 }}
-              className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-emerald-600/30 text-2xl"
-            >
-              <FaGraduationCap />
-            </motion.div>
+        <div className="relative z-10 p-12 max-w-xl">
+           <motion.div 
+             initial={{ opacity: 0, y: 30 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, ease: "easeOut" }}
+           >
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white mb-8 shadow-[0_0_40px_rgba(16,185,129,0.4)]">
+                 <FaGraduationCap className="text-3xl" />
+              </div>
+              <h1 className="text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+                Start Your <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Journey</span> Today.
+              </h1>
+              <p className="text-lg text-slate-400 mb-10 leading-relaxed font-medium">
+                Create your account to unlock premium insights, build your personal knowledge vault, and join a community of lifelong learners.
+              </p>
+              
+              <div className="flex items-center gap-4">
+                 <div className="flex -space-x-3">
+                   {[...Array(4)].map((_, i) => (
+                     <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center overflow-hidden" style={{ zIndex: 4 - i }}>
+                        <img src={`https://i.pravatar.cc/100?img=${i+12}`} alt="User" className="w-full h-full object-cover opacity-80" />
+                     </div>
+                   ))}
+                 </div>
+                 <div className="text-sm font-medium text-slate-400">
+                   Join <span className="text-white font-bold">10,000+</span> learners globally.
+                 </div>
+              </div>
+           </motion.div>
+        </div>
+      </div>
 
-            <motion.h1 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900"
-            >
-              Join <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">LessonVault</span>
-            </motion.h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1.5 font-medium">
-              Create your account and start capturing life wisdom today
-            </p>
+      {/* Right side: Registration Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
+        {/* Mobile glow */}
+        <div className="absolute top-0 right-0 w-full h-full bg-emerald-900/10 blur-[100px] rounded-full pointer-events-none lg:hidden"></div>
+
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="w-full max-w-md relative z-10"
+        >
+          {/* Logo for mobile */}
+          <div className="lg:hidden flex flex-col items-center mb-10">
+             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white mb-4 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                 <FaGraduationCap className="text-2xl" />
+             </div>
+             <h2 className="text-2xl font-bold text-white tracking-tight">LessonVault</h2>
           </div>
 
-          {/* Form wrapper */}
-          <Form onSubmit={handleSubmit} className="px-5 sm:px-7 py-5 space-y-4">
-            
-            {/* Full Name */}
-            <motion.div variants={itemVariants} className="w-full">
-              <TextField isRequired name="name" className="w-full">
-                <Label className="text-xs font-semibold text-slate-700 mb-1">Full Name</Label>
-                <div className="relative flex items-center">
-                  <BiUser className="absolute left-3.5 text-slate-400 text-lg z-10" />
-                  <Input 
-                    placeholder="Enter your name" 
-                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
-                  />
-                </div>
-                <FieldError className="text-xs text-rose-500 mt-1" />
-              </TextField>
-            </motion.div>
-
-            {/* Profile Image */}
-            <motion.div variants={itemVariants} className="w-full">
-              <TextField isRequired name="image" className="w-full">
-                <Label className="text-xs font-semibold text-slate-700 mb-1">Profile Image URL</Label>
-                <div className="relative flex items-center">
-                  <BiImage className="absolute left-3.5 text-slate-400 text-lg z-10" />
-                  <Input 
-                    placeholder="https://example.com/image.jpg" 
-                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
-                  />
-                </div>
-                <FieldError className="text-xs text-rose-500 mt-1" />
-              </TextField>
-            </motion.div>
-
-            {/* Email */}
-            <motion.div variants={itemVariants} className="w-full">
-              <TextField isRequired name="email" type="email" className="w-full">
-                <Label className="text-xs font-semibold text-slate-700 mb-1">Email Address</Label>
-                <div className="relative flex items-center">
-                  <BiEnvelope className="absolute left-3.5 text-slate-400 text-lg z-10" />
-                  <Input 
-                    placeholder="john@example.com" 
-                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
-                  />
-                </div>
-                <FieldError className="text-xs text-rose-500 mt-1" />
-              </TextField>
-            </motion.div>
-
-            {/* Password */}
-            <motion.div variants={itemVariants} className="w-full">
-              <TextField isRequired minLength={8} name="password" type="password" className="w-full">
-                <Label className="text-xs font-semibold text-slate-700 mb-1">Password</Label>
-                <div className="relative flex items-center">
-                  <BiLock className="absolute left-3.5 text-slate-400 text-lg z-10" />
-                  <Input 
-                    placeholder="Create secure password" 
-                    className="pl-10 w-full rounded-xl border-slate-200 focus:border-emerald-500 bg-slate-50 transition-all text-sm" 
-                  />
-                </div>
-                <Description className="text-[11px] text-slate-400 mt-1">
-                  8+ characters with uppercase & number
-                </Description>
-                <FieldError className="text-xs text-rose-500 mt-1" />
-              </TextField>
-            </motion.div>
-
-            {/* Action Buttons */}
-            <motion.div variants={itemVariants} className="flex flex-col gap-2.5 pt-3">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl font-bold transition shadow-lg shadow-emerald-600/20 text-sm cursor-pointer"
-              >
-                {isLoading ? "Creating Account..." : "Create Account"}
-              </Button>
-
-              <Button
-                type="reset"
-                variant="bordered"
-                className="w-full h-10 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <BiRefresh className="text-base" /> Clear Entries
-              </Button>
-            </motion.div>
-          </Form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 px-7 my-2">
-            <div className="h-px bg-slate-200 flex-1" />
-            <span className="text-[11px] text-slate-400 uppercase tracking-widest font-extrabold">OR</span>
-            <div className="h-px bg-slate-200 flex-1" />
+          <div className="mb-10 text-center lg:text-left">
+            <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">Create Account</h2>
+            <p className="text-slate-400 font-medium text-sm">Fill in your details to get started</p>
           </div>
 
-          {/* Google Auth Integration */}
-          <div className="px-7 pb-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Full Name</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <BiUser className="text-slate-500 group-focus-within:text-emerald-400 transition-colors text-lg" />
+                </div>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  placeholder="John Doe"
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-white placeholder-slate-600 outline-none backdrop-blur-sm shadow-inner"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Profile Image URL</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <BiImage className="text-slate-500 group-focus-within:text-emerald-400 transition-colors text-lg" />
+                </div>
+                <input
+                  type="url"
+                  name="image"
+                  required
+                  placeholder="https://example.com/avatar.png"
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-white placeholder-slate-600 outline-none backdrop-blur-sm shadow-inner"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Email Address</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <BiEnvelope className="text-slate-500 group-focus-within:text-emerald-400 transition-colors text-lg" />
+                </div>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="name@example.com"
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-white placeholder-slate-600 outline-none backdrop-blur-sm shadow-inner"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Password</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <BiLock className="text-slate-500 group-focus-within:text-emerald-400 transition-colors text-lg" />
+                </div>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  minLength={8}
+                  placeholder="••••••••"
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-white placeholder-slate-600 outline-none backdrop-blur-sm shadow-inner"
+                />
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1.5 ml-1">Must be at least 8 characters</p>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-6 mt-4 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] text-base flex items-center justify-center gap-2 group cursor-pointer"
+            >
+              {isLoading ? (
+                <Spinner size="sm" color="current" />
+              ) : (
+                <>
+                  Create Account
+                  <BiRightArrowAlt className="text-xl group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-8 relative">
+             <div className="absolute inset-0 flex items-center">
+               <div className="w-full border-t border-slate-800"></div>
+             </div>
+             <div className="relative flex justify-center text-sm">
+               <span className="px-4 bg-[#030712] text-slate-500 font-medium">Or register with</span>
+             </div>
+          </div>
+
+          <div className="mt-8">
             <Button
               onClick={GoogleSignUp}
-              variant="bordered"
-              className="w-full h-12 flex items-center justify-center gap-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold transition cursor-pointer"
+              className="w-full py-5 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/50 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
             >
               <FcGoogle size={20} />
               Continue with Google
             </Button>
           </div>
 
-          {/* Login Redirection Footer */}
-          <div className="pb-6 text-center text-xs text-slate-500 font-medium">
+          <p className="mt-10 text-center text-sm text-slate-500">
             Already have an account?{" "}
-            <Link href="/login" className="text-emerald-600 hover:text-emerald-700 font-bold ml-0.5 transition underline underline-offset-4">
+            <Link href="/login" className="font-bold text-white hover:text-emerald-400 transition-colors">
               Sign In
             </Link>
-          </div>
+          </p>
 
-        </Card>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
-};
-
-export default RegisterPage;
+}

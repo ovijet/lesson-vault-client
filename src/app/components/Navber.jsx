@@ -110,7 +110,7 @@ const Navbar = () => {
             <div className="relative">
               <div className="flex items-center gap-3">
                 {/* Premium Badge & Upgrade */}
-                {user?.plan === "premium" ? (
+                {(user?.plan === "premium" || user?.plan === "pro") ? (
                   <div className="flex items-center gap-1 bg-amber-50 border border-amber-200/80 rounded-full px-3 py-1 shadow-xs">
                     <span className="text-xs">💎</span>
                     <span className="font-bold text-amber-700 tracking-wider uppercase text-[10px]">
@@ -245,7 +245,7 @@ const Navbar = () => {
                     <p className="text-sm font-bold text-slate-900 truncate">{user?.name}</p>
                     <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                   </div>
-                  {user?.plan === "premium" && (
+                  {(user?.plan === "premium" || user?.plan === "pro") && (
                     <span className="text-sm bg-amber-100 px-2 py-0.5 rounded-full flex-shrink-0">💎</span>
                   )}
                 </div>
@@ -273,7 +273,7 @@ const Navbar = () => {
 
               {user ? (
                 <div className="space-y-1.5 pt-1">
-                  {user?.plan !== "premium" && (
+                  {(user?.plan !== "premium" && user?.plan !== "pro") && (
                     <Link
                       href="/pricing"
                       onClick={() => setIsMobileOpen(false)}
