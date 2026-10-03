@@ -80,7 +80,7 @@ export default function CommunityNewsletter() {
                       ✓
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-2">
-                      You're Subscribed!
+                      You&apos;re Subscribed!
                     </h3>
                     <p className="text-slate-300 text-sm">
                       Check your inbox this Sunday for your first edition of

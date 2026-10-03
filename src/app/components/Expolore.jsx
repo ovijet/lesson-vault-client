@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const categories = [
   {
@@ -119,7 +120,7 @@ export default function ExploreCategories() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {categories.map((cat, idx) => (
-            <a
+            <Link
               key={idx}
               href="/public-lessons"
               className={`bg-white border border-slate-200/80 p-7 rounded-3xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 shadow-xs hover:shadow-xl ${cat.bgClass} group`}
@@ -141,7 +142,7 @@ export default function ExploreCategories() {
                 <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
                 {cat.count}
               </div>
-            </a>
+            </Link>
           ))}
         </div>
 

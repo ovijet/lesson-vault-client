@@ -31,7 +31,7 @@ const PublicDetailsPage = ({ data }) => {
           </h1>
 
           <p className="text-slate-300 text-sm leading-relaxed mb-8">
-            "{data.title}" is an exclusive high-impact lesson reserved for Pro Members. Upgrade today to unlock the full library.
+            &quot;{data.title}&quot; is an exclusive high-impact lesson reserved for Pro Members. Upgrade today to unlock the full library.
           </p>
 
           <Link
